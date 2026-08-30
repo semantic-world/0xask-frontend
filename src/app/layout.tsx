@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { ModeSync } from "@/components/layout/ModeSync";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        <InstallPrompt />
         <ServiceWorkerRegistrar />
       </body>
     </html>

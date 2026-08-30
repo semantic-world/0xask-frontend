@@ -5,9 +5,10 @@ import type { NextConfig } from "next";
 const backendOrigin = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8000";
 
 /**
- * Security headers are set here rather than in a proxy so that they travel
- * with the deployable. The content security policy is deliberately strict and
- * is tightened further during the hardening phase.
+ * Security headers.
+ *
+ * Set here rather than in a proxy so they travel with the deployable and
+ * cannot be lost by a change to infrastructure nobody remembers owning.
  */
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -15,7 +16,27 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    value: [
+      "camera=()",
+      "microphone=()",
+      "geolocation=()",
+      "payment=()",
+      "usb=()",
+      "magnetometer=()",
+      "gyroscope=()",
+      "accelerometer=()",
+      "interest-cohort=()",
+    ].join(", "),
+  },
+  // Isolates this origin from other windows it opens or that open it.
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  { key: "X-DNS-Prefetch-Control", value: "off" },
+  {
+    // Two years, subdomains included, and preload eligible. Only meaningful
+    // over HTTPS, which production is and local development is not.
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
   },
 ];
 
@@ -29,6 +50,15 @@ const config: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        // The console is never indexed and never framed, and its responses
+        // must not be stored by anything between the server and the browser.
+        source: "/admin/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
       },
       {
         // The worker must never be cached, otherwise a stale worker can pin an

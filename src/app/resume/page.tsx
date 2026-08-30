@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ResumeActions } from "@/components/classic/ResumeActions";
 import { EmptyNotice } from "@/components/classic/Section";
 import { getResume, NotPublished, type Resume } from "@/lib/server-api";
 
@@ -84,6 +85,10 @@ export default async function ResumePage({ searchParams }: Search) {
           The facts are identical in every version. Only the order changes, so what matters for the
           role you are hiring for appears first.
         </p>
+
+        <div className="mt-6">
+          <ResumeActions variant={variant} />
+        </div>
       </nav>
 
       <article className="mx-auto max-w-[52rem]">

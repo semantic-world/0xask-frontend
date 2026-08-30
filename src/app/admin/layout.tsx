@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
+/**
+ * Rendered per request.
+ *
+ * Not for freshness, which the client fetches anyway, but because the content
+ * security policy uses a per request nonce. A statically prerendered page is
+ * generated before middleware runs, so its scripts carry no nonce and a strict
+ * policy blocks them.
+ */
+export const dynamic = "force-dynamic";
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>

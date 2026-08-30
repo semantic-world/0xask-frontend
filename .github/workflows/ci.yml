@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint and format
+        run: npx biome check .
+
+      - name: House style
+        run: ./scripts/check-dashes.sh
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Dependency audit
+        # Advisory. A new advisory against a transitive dependency should be
+        # visible without blocking an unrelated change.
+        run: npm audit --audit-level=high || true
+
+      - name: Build
+        run: npm run build
