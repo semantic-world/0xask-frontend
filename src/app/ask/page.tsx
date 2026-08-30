@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AskComposer } from "@/components/ask/AskComposer";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/ask" },
   title: "0xAsk",
   description:
     "Ask about the engineering work of 0xSemantic. Answers come from curated, approved knowledge and cite their evidence.",

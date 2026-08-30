@@ -12,6 +12,7 @@ import { getProfile, NotPublished } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description: "How to get in touch.",
 };

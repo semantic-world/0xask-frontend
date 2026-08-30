@@ -33,7 +33,32 @@ async function hashThemeScript(): Promise<string> {
   return themeScriptHash;
 }
 
+/**
+ * Where the API lives, read per request.
+ *
+ * This has to happen here rather than through a rewrite in next.config.ts.
+ * With standalone output the config is evaluated at build time and frozen into
+ * the server bundle, so a rewrite target read from the environment is baked in
+ * as whatever it was on the build machine. In a container that means the
+ * runtime BACKEND_ORIGIN is silently ignored and every API call goes to
+ * localhost, which is nothing.
+ *
+ * Addressed by literal IPv4 by default rather than "localhost", which resolves
+ * to ::1 first on most Linux hosts while the API server binds IPv4.
+ */
+function backendOrigin(): string {
+  return process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8000";
+}
+
 export async function middleware(request: NextRequest) {
+  // The API is proxied through this origin so the browser never talks cross
+  // origin and the session cookie stays first party. The API sets its own
+  // headers, so nothing here is added to it.
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    const target = new URL(request.nextUrl.pathname + request.nextUrl.search, backendOrigin());
+    return NextResponse.rewrite(target);
+  }
+
   const nonce = btoa(crypto.randomUUID());
   const isProduction = process.env.NODE_ENV === "production";
 

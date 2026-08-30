@@ -1,9 +1,5 @@
 import type { NextConfig } from "next";
 
-// Addressed by literal IPv4 rather than "localhost", which resolves to ::1
-// first on most Linux hosts while the API server binds IPv4 only.
-const backendOrigin = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8000";
-
 /**
  * Security headers.
  *
@@ -41,6 +37,10 @@ const securityHeaders = [
 ];
 
 const config: NextConfig = {
+  // Produces a self contained server bundle with only the dependencies it
+  // actually uses, so the runtime image carries no node_modules tree.
+  output: "standalone",
+
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
@@ -68,17 +68,6 @@ const config: NextConfig = {
           { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
           { key: "Service-Worker-Allowed", value: "/" },
         ],
-      },
-    ];
-  },
-
-  async rewrites() {
-    // The browser talks to the same origin, which keeps cookies first party
-    // and removes the need for cross origin credentials in the browser.
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${backendOrigin}/api/:path*`,
       },
     ];
   },

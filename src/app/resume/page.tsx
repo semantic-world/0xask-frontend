@@ -15,6 +15,7 @@ import { getResume, NotPublished, type Resume } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/resume" },
   title: "Resume",
   description: "The same work, ordered for the role you are hiring for.",
 };

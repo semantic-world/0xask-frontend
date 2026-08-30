@@ -14,6 +14,7 @@ import { getSkills, NotPublished, type SkillGroup } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/skills" },
   title: "Skills",
   description: "Technical capabilities, each linked to the work that demonstrates it.",
 };

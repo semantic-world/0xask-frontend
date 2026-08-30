@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { categoryLabel } from "@/components/classic/ProjectCard";
 import { Prose, TagList } from "@/components/classic/Section";
+import { breadcrumbSchema, projectSchema, StructuredData } from "@/components/StructuredData";
 import { getProject, type ProjectDetail } from "@/lib/server-api";
 import { SITE } from "@/lib/site";
 
@@ -74,20 +75,13 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <article className="shell-width py-14 sm:py-20">
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: structured data for crawlers, serialised from our own record
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "CreativeWork",
-            name: project.name,
-            description: project.tagline ?? project.summary ?? undefined,
-            url: `${SITE.origin}/projects/${project.slug}`,
-            keywords: project.technologies.join(", ") || undefined,
-            author: { "@type": "Person", name: SITE.name },
-          }),
-        }}
+      <StructuredData data={projectSchema(project)} />
+      <StructuredData
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/projects" },
+          { name: project.name, path: `/projects/${project.slug}` },
+        ])}
       />
 
       <nav aria-label="Breadcrumb" className="mb-8">
@@ -141,6 +135,36 @@ export default async function ProjectPage({ params }: Params) {
       {project.summary ? (
         <section className="py-12">
           <p className="max-w-[64ch] text-[length:var(--text-lead)]">{project.summary}</p>
+        </section>
+      ) : null}
+
+      {project.media.length ? (
+        <section className="pb-12" aria-label="Screenshots and diagrams">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {project.media.map((item) => (
+              <figure
+                key={item.url}
+                className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface"
+              >
+                {/* Intrinsic dimensions where the record has them, so the space
+                    is reserved before the image arrives and nothing shifts. */}
+                <img
+                  src={item.url}
+                  alt={item.alt_text}
+                  width={item.width ?? undefined}
+                  height={item.height ?? undefined}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-auto w-full"
+                />
+                {item.alt_text ? (
+                  <figcaption className="border-t border-border-subtle px-4 py-2.5 text-[var(--text-caption)] text-ink-faint">
+                    {item.alt_text}
+                  </figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </div>
         </section>
       ) : null}
 

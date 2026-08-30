@@ -13,6 +13,7 @@ import { getProfile, NotPublished } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description: "Who 0xSemantic is and how they work.",
 };

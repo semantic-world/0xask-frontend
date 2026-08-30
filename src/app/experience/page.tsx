@@ -13,6 +13,7 @@ import { type Experience, getExperience, NotPublished } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/experience" },
   title: "Experience",
   description: "Roles, engagements, and what each one involved.",
 };

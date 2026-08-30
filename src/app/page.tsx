@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProjectCardLink } from "@/components/classic/ProjectCard";
 import { EmptyNotice, Section } from "@/components/classic/Section";
+import { personSchema, StructuredData, websiteSchema } from "@/components/StructuredData";
 import { getProfile, getProjects, getStatus } from "@/lib/server-api";
 
 /**
@@ -32,6 +33,9 @@ export default async function HomePage() {
 
   return (
     <div className="shell-width">
+      <StructuredData data={personSchema(profile)} />
+      <StructuredData data={websiteSchema(profile)} />
+
       <section className="flex min-h-[calc(100svh-var(--header-height)-6rem)] flex-col justify-center py-20">
         <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
           {profile.headline}

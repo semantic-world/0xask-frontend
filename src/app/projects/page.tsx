@@ -14,6 +14,7 @@ import { getProjects, NotPublished } from "@/lib/server-api";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/projects" },
   title: "Work",
   description: "Selected engineering work, with a full case study for each project.",
 };

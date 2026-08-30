@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+.next
+out
+dist
+build
+.env
+.env.*
+!.env.example
+npm-debug.log*
+*.md
+.DS_Store
