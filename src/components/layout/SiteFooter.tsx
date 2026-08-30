@@ -13,7 +13,7 @@ export function SiteFooter() {
         </p>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
           {[
-            { href: "/work", label: "Work" },
+            { href: "/projects", label: "Work" },
             { href: "/resume", label: "Resume" },
             { href: "/contact", label: "Contact" },
             { href: "/ask", label: "0xAsk" },

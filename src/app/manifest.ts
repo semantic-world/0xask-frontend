@@ -60,7 +60,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "Selected work",
         short_name: "Work",
-        url: "/work",
+        url: "/projects",
         icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
       },
     ],

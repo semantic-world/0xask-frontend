@@ -329,6 +329,61 @@
   }
 }
 
+/*
+ * Print.
+ *
+ * The resume is the page people actually print, so the printed result is
+ * treated as a real output rather than whatever the screen styles happen to
+ * produce. Navigation and chrome are removed, colour is dropped to ink on
+ * paper, and links keep their text rather than their underline.
+ */
+@media print {
+  :root {
+    --paper: #ffffff;
+    --surface: #ffffff;
+    --ink: #000000;
+    --ink-muted: #333333;
+    --ink-faint: #666666;
+    --accent: #000000;
+    --border: #cccccc;
+    --border-strong: #999999;
+  }
+
+  header[class*="sticky"],
+  footer,
+  nav[aria-label="Resume variant"] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  .shell-width {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000000;
+  }
+
+  /* Sections should not be split across a page break mid thought. */
+  section,
+  li {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

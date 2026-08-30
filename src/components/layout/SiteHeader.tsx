@@ -2,11 +2,13 @@ import Link from "next/link";
 import { ModeToggle } from "@/components/layout/ModeToggle";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
+// Writing is deliberately absent. There is no content source for it yet, and
+// a navigation item leading to an empty page is worse than no item.
 const NAV = [
-  { href: "/work", label: "Work" },
+  { href: "/projects", label: "Work" },
   { href: "/experience", label: "Experience" },
   { href: "/skills", label: "Skills" },
-  { href: "/writing", label: "Writing" },
+  { href: "/about", label: "About" },
   { href: "/resume", label: "Resume" },
   { href: "/contact", label: "Contact" },
 ];

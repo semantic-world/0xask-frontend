@@ -9,11 +9,10 @@ import { SITE } from "@/lib/site";
 const ROUTES: Array<{ path: string; priority: number; changeFrequency: "weekly" | "monthly" }> = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/ask", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/work", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/projects", priority: 0.9, changeFrequency: "weekly" },
   { path: "/about", priority: 0.7, changeFrequency: "monthly" },
   { path: "/experience", priority: 0.7, changeFrequency: "monthly" },
   { path: "/skills", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/writing", priority: 0.6, changeFrequency: "monthly" },
   { path: "/resume", priority: 0.8, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.6, changeFrequency: "monthly" },
 ];
