@@ -50,6 +50,47 @@ export function Section({
  * and adding a parser would mean adding a sanitiser, which is a dependency and
  * an attack surface for a feature nobody asked for.
  */
+/**
+ * Inline emphasis and code spans, and nothing else.
+ *
+ * A case study that names three tools wants their names to stand out, and an
+ * install command wants to look like a command rather than like prose. That is
+ * the whole requirement, so this handles `**bold**` and `` `code` `` and
+ * leaves every other character alone.
+ *
+ * It builds React elements rather than a string of HTML. Nothing here is ever
+ * handed to `dangerouslySetInnerHTML`, so text arriving from the database
+ * cannot become markup however it is written.
+ */
+const INLINE = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+
+function inline(text: string): ReactNode[] {
+  return text.split(INLINE).map((piece, index) => {
+    const key = `${index}-${piece.slice(0, 24)}`;
+
+    if (piece.startsWith("**") && piece.endsWith("**") && piece.length > 4) {
+      return (
+        <strong key={key} className="font-medium text-ink">
+          {piece.slice(2, -2)}
+        </strong>
+      );
+    }
+
+    if (piece.startsWith("`") && piece.endsWith("`") && piece.length > 2) {
+      return (
+        <code
+          key={key}
+          className="rounded bg-surface-sunken px-1.5 py-0.5 font-mono text-[0.85em] text-ink"
+        >
+          {piece.slice(1, -1)}
+        </code>
+      );
+    }
+
+    return piece;
+  });
+}
+
 export function Prose({ text }: { text: string | null | undefined }) {
   if (!text?.trim()) return null;
 
@@ -62,7 +103,7 @@ export function Prose({ text }: { text: string | null | undefined }) {
     <div className="space-y-4">
       {paragraphs.map((paragraph) => (
         <p key={paragraph.slice(0, 60)} className="max-w-[68ch] text-ink-muted">
-          {paragraph}
+          {inline(paragraph)}
         </p>
       ))}
     </div>
