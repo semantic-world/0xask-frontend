@@ -84,6 +84,7 @@ export type Profile = {
   full_name: string;
   handle: string | null;
   headline: string;
+  statement: string | null;
   summary: string;
   bio: string | null;
   location: string | null;
@@ -160,15 +161,42 @@ export type Experience = {
   technologies: string[];
 };
 
+export type Education = {
+  institution: string;
+  qualification: string;
+  field_of_study: string | null;
+  result: string | null;
+  location: string | null;
+  completed_on: string | null;
+  summary: string | null;
+};
+
+export type Certification = {
+  name: string;
+  issuer: string;
+  credential_url: string | null;
+  issued_on: string | null;
+  topics: string[];
+  is_featured: boolean;
+};
+
+export type Credentials = {
+  education: Education[];
+  certifications: Certification[];
+};
+
 export type Resume = {
   variant: string;
   generated_at: string;
   profile: Profile;
   headline: string;
+  statement: string | null;
   summary: string;
   experience: Experience[];
   projects: ProjectCard[];
   skills: SkillGroup[];
+  education: Education[];
+  certifications: Certification[];
 };
 
 /**
@@ -213,6 +241,7 @@ export const getProfile = () => published<Profile>("/api/v1/profile");
 export const getProjects = () => published<ProjectCard[]>("/api/v1/projects");
 export const getSkills = () => published<SkillGroup[]>("/api/v1/skills");
 export const getExperience = () => published<Experience[]>("/api/v1/experience");
+export const getCredentials = () => published<Credentials>("/api/v1/credentials");
 export const getResume = (variant = "general") => published<Resume>(`/api/v1/resume/${variant}`);
 
 /** Null rather than throwing, so a page can render its own not found. */

@@ -79,10 +79,16 @@ export default async function HomePage() {
         </Reveal>
 
         <Reveal delay={80}>
-          <h1 className="mt-8 max-w-[15ch] text-[length:var(--text-display)] font-medium leading-[0.95] tracking-[-0.04em]">
-            <span className="text-gradient">Systems built to be understood</span>
-            <span className="text-ink-faint">.</span>
+          {/* His own line, from the profile, rather than one written into the
+              site. The most prominent sentence on a portfolio should be the
+              owner's. */}
+          <h1 className="mt-8 max-w-[17ch] text-[length:var(--text-display)] font-medium leading-[0.95] tracking-[-0.04em]">
+            <span className="text-gradient">{profile.statement ?? profile.headline}</span>
           </h1>
+
+          <p className="mt-6 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-faint">
+            {profile.full_name}
+          </p>
         </Reveal>
 
         <Reveal delay={160}>

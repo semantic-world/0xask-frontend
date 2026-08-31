@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Prose, Section } from "@/components/classic/Section";
-import { getProfile, NotPublished } from "@/lib/server-api";
+import { getCredentials, getProfile, NotPublished } from "@/lib/server-api";
 
 /**
  * Rendered per request.
@@ -20,7 +20,10 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   try {
-    const profile = await getProfile();
+    const [profile, credentials] = await Promise.all([
+      getProfile(),
+      getCredentials().catch(() => ({ education: [], certifications: [] })),
+    ]);
 
     return (
       <div className="shell-width py-14 sm:py-20">
@@ -67,6 +70,71 @@ export default async function AboutPage() {
             </ul>
           ) : null}
         </Section>
+
+        {credentials.education.length ? (
+          <Section eyebrow="02" title="Education">
+            <ul className="space-y-6">
+              {credentials.education.map((entry) => (
+                <li key={`${entry.institution}-${entry.qualification}`}>
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 className="text-[length:var(--text-h4)] font-medium">
+                      {entry.qualification}
+                      {entry.field_of_study ? (
+                        <span className="text-accent">, {entry.field_of_study}</span>
+                      ) : null}
+                    </h3>
+                    {entry.completed_on ? (
+                      <span className="tabular font-mono text-[var(--text-caption)] text-ink-faint">
+                        {new Date(entry.completed_on).getFullYear()}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-1 text-[var(--text-small)] text-ink-muted">
+                    {entry.institution}
+                  </p>
+                  {entry.result ? (
+                    <p className="mt-1 text-[var(--text-caption)] text-ink-faint">{entry.result}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Section>
+        ) : null}
+
+        {credentials.certifications.length ? (
+          <Section
+            eyebrow="03"
+            title="Certifications"
+            children={
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {credentials.certifications.map((entry) => (
+                  <li
+                    key={entry.name}
+                    className="rounded-[var(--radius-lg)] border border-border-subtle bg-surface/60 p-5 backdrop-blur-sm"
+                  >
+                    <p className="font-medium">{entry.name}</p>
+                    <p className="mt-1 text-[var(--text-caption)] text-ink-faint">
+                      {entry.issuer}
+                      {entry.issued_on ? ` · ${new Date(entry.issued_on).getFullYear()}` : ""}
+                    </p>
+                    {entry.topics.length ? (
+                      <ul className="mt-3 flex flex-wrap gap-1.5">
+                        {entry.topics.map((topic) => (
+                          <li
+                            key={topic}
+                            className="rounded-full bg-surface-sunken px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-ink-faint"
+                          >
+                            {topic}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            }
+          />
+        ) : null}
       </div>
     );
   } catch (error) {

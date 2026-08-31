@@ -20,12 +20,15 @@ export const metadata: Metadata = {
   description: "The same work, ordered for the role you are hiring for.",
 };
 
+// The roles these resumes are written for, taken from the target roles in the
+// master resume rather than invented.
 const VARIANTS = [
   { key: "general", label: "General" },
-  { key: "ai-engineer", label: "AI engineer" },
-  { key: "backend-engineer", label: "Backend engineer" },
-  { key: "protocol-engineer", label: "Protocol engineer" },
-  { key: "security-engineer", label: "Security engineer" },
+  { key: "ai-infrastructure", label: "AI infrastructure" },
+  { key: "protocol-security", label: "Protocol security" },
+  { key: "ai-evaluation", label: "AI evaluation" },
+  { key: "blockchain-engineering", label: "Blockchain" },
+  { key: "enterprise-software", label: "Enterprise software" },
 ];
 
 type Search = { searchParams: Promise<{ role?: string }> };
@@ -185,6 +188,45 @@ export default async function ResumePage({ searchParams }: Search) {
                       {project.technologies.join(" · ")}
                     </p>
                   ) : null}
+                </li>
+              ))}
+            </ul>
+          </ResumeSection>
+        ) : null}
+
+        {resume.education.length ? (
+          <ResumeSection title="Education">
+            <ul className="space-y-3">
+              {resume.education.map((entry) => (
+                <li key={`${entry.institution}-${entry.qualification}`}>
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="font-medium">
+                      {entry.qualification}
+                      {entry.field_of_study ? `, ${entry.field_of_study}` : ""}
+                    </p>
+                    {entry.completed_on ? (
+                      <span className="tabular font-mono text-[var(--text-caption)] text-ink-faint">
+                        {new Date(entry.completed_on).getFullYear()}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-[var(--text-small)] text-ink-muted">
+                    {entry.institution}
+                    {entry.result ? ` · ${entry.result}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </ResumeSection>
+        ) : null}
+
+        {resume.certifications.length ? (
+          <ResumeSection title="Certifications">
+            <ul className="space-y-2">
+              {resume.certifications.map((entry) => (
+                <li key={entry.name} className="text-[var(--text-small)]">
+                  {entry.name}
+                  <span className="text-ink-faint"> · {entry.issuer}</span>
                 </li>
               ))}
             </ul>
