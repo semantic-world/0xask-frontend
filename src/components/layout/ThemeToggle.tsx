@@ -59,6 +59,10 @@ export function ThemeToggle() {
         const selected = ready && theme === option.value;
 
         return (
+          // The ARIA authoring practices build a radiogroup from buttons, and a
+          // native radio would have to be stripped of its appearance to end up
+          // looking like this anyway.
+          // biome-ignore lint/a11y/useSemanticElements: explained just above.
           <button
             key={option.value}
             type="button"
@@ -100,12 +104,11 @@ function ThemeIcon({ theme }: { theme: Theme }) {
     strokeWidth: 2,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
-    "aria-hidden": true,
   };
 
   if (theme === "light") {
     return (
-      <svg {...common}>
+      <svg {...common} aria-hidden="true">
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       </svg>
@@ -114,15 +117,14 @@ function ThemeIcon({ theme }: { theme: Theme }) {
 
   if (theme === "dark") {
     return (
-      <svg {...common}>
+      <svg {...common} aria-hidden="true">
         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
       </svg>
     );
   }
 
   return (
-    <svg {...common}>
-      <title>System</title>
+    <svg {...common} aria-hidden="true">
       <rect x="2" y="4" width="20" height="13" rx="2" />
       <path d="M8 21h8M12 17v4" />
     </svg>

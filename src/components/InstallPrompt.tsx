@@ -75,8 +75,7 @@ export function InstallPrompt() {
   }
 
   return (
-    <div
-      role="complementary"
+    <aside
       aria-label="Install this site"
       className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)]"
     >
@@ -111,6 +110,6 @@ export function InstallPrompt() {
           <span aria-hidden="true">✕</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

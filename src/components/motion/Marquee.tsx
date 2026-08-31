@@ -11,11 +11,12 @@ export function Marquee({ items, label }: { items: readonly string[]; label: str
   if (!items.length) return null;
 
   return (
-    <div className="edge-fade overflow-hidden py-1" aria-label={label}>
+    <div className="edge-fade overflow-hidden py-1">
       <div className="marquee gap-3">
         {["first", "second"].map((pass) => (
           <ul
             key={pass}
+            aria-label={pass === "first" ? label : undefined}
             aria-hidden={pass === "second" ? "true" : undefined}
             className="flex shrink-0 items-center gap-3 pr-3"
           >

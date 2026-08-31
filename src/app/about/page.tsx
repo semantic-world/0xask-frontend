@@ -102,38 +102,34 @@ export default async function AboutPage() {
         ) : null}
 
         {credentials.certifications.length ? (
-          <Section
-            eyebrow="03"
-            title="Certifications"
-            children={
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {credentials.certifications.map((entry) => (
-                  <li
-                    key={entry.name}
-                    className="rounded-[var(--radius-lg)] border border-border-subtle bg-surface/60 p-5 backdrop-blur-sm"
-                  >
-                    <p className="font-medium">{entry.name}</p>
-                    <p className="mt-1 text-[var(--text-caption)] text-ink-faint">
-                      {entry.issuer}
-                      {entry.issued_on ? ` · ${new Date(entry.issued_on).getFullYear()}` : ""}
-                    </p>
-                    {entry.topics.length ? (
-                      <ul className="mt-3 flex flex-wrap gap-1.5">
-                        {entry.topics.map((topic) => (
-                          <li
-                            key={topic}
-                            className="rounded-full bg-surface-sunken px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-ink-faint"
-                          >
-                            {topic}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            }
-          />
+          <Section eyebrow="03" title="Certifications">
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {credentials.certifications.map((entry) => (
+                <li
+                  key={entry.name}
+                  className="rounded-[var(--radius-lg)] border border-border-subtle bg-surface/60 p-5 backdrop-blur-sm"
+                >
+                  <p className="font-medium">{entry.name}</p>
+                  <p className="mt-1 text-[var(--text-caption)] text-ink-faint">
+                    {entry.issuer}
+                    {entry.issued_on ? ` · ${new Date(entry.issued_on).getFullYear()}` : ""}
+                  </p>
+                  {entry.topics.length ? (
+                    <ul className="mt-3 flex flex-wrap gap-1.5">
+                      {entry.topics.map((topic) => (
+                        <li
+                          key={topic}
+                          className="rounded-full bg-surface-sunken px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-ink-faint"
+                        >
+                          {topic}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Section>
         ) : null}
       </div>
     );

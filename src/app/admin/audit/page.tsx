@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable, Pager } from "@/components/admin/DataTable";
 import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
 import { TextField } from "@/components/primitives/Field";
-import type { AuditEntry } from "@/lib/admin-types";
+import type { AuditEntry, Page } from "@/lib/admin-types";
 import { api } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
@@ -59,13 +59,29 @@ const COLUMNS: ReadonlyArray<Column<AuditEntry>> = [
   },
 ];
 
+const LIMIT = 50;
+
 export default function AuditPage() {
   const [action, setAction] = useState("");
+  const [offset, setOffset] = useState(0);
 
-  const entries = useResource<AuditEntry[]>(
-    () => api.get("/api/v1/admin/audit", { limit: 200, action: action || undefined }),
-    [action],
+  const entries = useResource<Page<AuditEntry>>(
+    () =>
+      api.get("/api/v1/admin/audit", {
+        limit: LIMIT,
+        offset,
+        action: action || undefined,
+      }),
+    [action, offset],
   );
+
+  // Narrowing the filter while deep in the log would otherwise land on an
+  // offset past the end of the smaller result, showing an empty page for a
+  // filter that does match something.
+  function filterBy(value: string) {
+    setAction(value);
+    setOffset(0);
+  }
 
   return (
     <>
@@ -81,7 +97,7 @@ export default function AuditPage() {
               label="Filter by action"
               placeholder="knowledge.approved"
               value={action}
-              onChange={(event) => setAction(event.target.value)}
+              onChange={(event) => filterBy(event.target.value)}
             />
           </div>
         </div>
@@ -93,11 +109,19 @@ export default function AuditPage() {
         ) : entries.loading || !entries.data ? (
           <Skeleton rows={6} />
         ) : (
-          <DataTable
-            columns={COLUMNS}
-            rows={entries.data}
-            emptyState={<EmptyState title="Nothing recorded yet" />}
-          />
+          <>
+            <DataTable
+              columns={COLUMNS}
+              rows={entries.data.items}
+              emptyState={<EmptyState title="Nothing recorded yet" />}
+            />
+            <Pager
+              total={entries.data.total}
+              limit={entries.data.limit}
+              offset={entries.data.offset}
+              onChange={setOffset}
+            />
+          </>
         )}
       </Panel>
     </>

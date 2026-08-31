@@ -154,6 +154,9 @@ export default async function ProjectPage({ params }: Params) {
               >
                 {/* Intrinsic dimensions where the record has them, so the space
                     is reserved before the image arrives and nothing shifts. */}
+                {/* biome-ignore lint/performance/noImgElement: media URLs come
+                    from the record and can name any host, which next/image
+                    cannot serve without a loader entry per host. */}
                 <img
                   src={item.url}
                   alt={item.alt_text}
