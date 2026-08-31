@@ -61,6 +61,14 @@ export function ProjectCardLink({ project, index }: { project: Project; index?: 
               Selected
             </span>
           ) : null}
+          {/* Whether something is free and open source is a reason to click, so
+              it belongs on the card rather than three screens into the page. */}
+          {project.is_open_source ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface-sunken px-2 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-ink-muted">
+              <span aria-hidden="true">&#9670;</span>
+              {project.license ?? "Open source"}
+            </span>
+          ) : null}
         </div>
 
         <h3 className="text-[length:var(--text-h3)] font-medium tracking-[-0.02em] transition-colors duration-300 group-hover:text-accent">

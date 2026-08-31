@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { EmptyNotice, Prose, TagList } from "@/components/classic/Section";
 import { type Experience, getExperience, NotPublished } from "@/lib/server-api";
 
@@ -15,7 +16,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   alternates: { canonical: "/experience" },
   title: "Experience",
-  description: "Roles, engagements, and what each one involved.",
+  description: "Roles and engagements from 2021 onward, and the work each one produced.",
 };
 
 const KIND_LABEL: Record<string, string> = {
@@ -42,9 +43,14 @@ export default async function ExperiencePage() {
         <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-muted backdrop-blur-sm">
           Experience
         </p>
-        <h1 className="mt-6 max-w-[20ch] text-[length:var(--text-h1)] font-medium leading-[1] tracking-[-0.04em]">
-          Where the work happened
+        <h1 className="mt-6 max-w-[18ch] text-[length:var(--text-h1)] font-medium leading-[1] tracking-[-0.04em]">
+          <span className="text-gradient">Where the work happened</span>
         </h1>
+        <p className="mt-5 max-w-[60ch] text-[length:var(--text-lead)] text-ink-muted">
+          Five tracks running in parallel rather than one after another: the enterprise AI work, the
+          protocol research, the open source, the evaluation practice, and the client engagements
+          that have been going since 2021.
+        </p>
       </header>
 
       {entries.length === 0 ? (
@@ -103,8 +109,35 @@ export default async function ExperiencePage() {
                     </ul>
                   ) : null}
 
+                  {entry.projects.length ? (
+                    <div className="mt-6">
+                      <p className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-ink-faint">
+                        What came out of it
+                      </p>
+                      <ul className="mt-3 flex flex-wrap gap-2">
+                        {entry.projects.map((project) => (
+                          <li key={project.slug}>
+                            <Link
+                              href={`/projects/${project.slug}`}
+                              title={project.tagline ?? undefined}
+                              className="group inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/70 py-1.5 pl-3.5 pr-3 text-[var(--text-small)] backdrop-blur-sm transition-[border-color,color,transform] duration-300 ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-accent/40 hover:text-accent"
+                            >
+                              {project.name}
+                              <span
+                                aria-hidden="true"
+                                className="text-ink-faint transition-transform duration-300 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:text-accent"
+                              >
+                                &rarr;
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
                   {entry.technologies.length ? (
-                    <div className="mt-5">
+                    <div className="mt-6">
                       <TagList items={entry.technologies} label="Technologies" />
                     </div>
                   ) : null}

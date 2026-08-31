@@ -101,6 +101,8 @@ export type ProjectCard = {
   category: string;
   technologies: string[];
   is_featured: boolean;
+  is_open_source: boolean;
+  license: string | null;
   published_at: string | null;
 };
 
@@ -148,6 +150,12 @@ export type Skill = {
 
 export type SkillGroup = { category: string; skills: Skill[] };
 
+export type LinkedProject = {
+  slug: string;
+  name: string;
+  tagline: string | null;
+};
+
 export type Experience = {
   role: string;
   organization_name: string | null;
@@ -159,6 +167,7 @@ export type Experience = {
   summary: string | null;
   highlights: string[];
   technologies: string[];
+  projects: LinkedProject[];
 };
 
 export type Education = {
