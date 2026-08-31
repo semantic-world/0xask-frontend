@@ -204,6 +204,10 @@ export type Repository = {
   disclosure_allowed: boolean;
   exclusion_reason: string | null;
   secrets_detected: number;
+  sources_collected: number;
+  knowledge_items: number;
+  knowledge_pending: number;
+  knowledge_approved: number;
 };
 
 export type SyncRun = {
@@ -236,4 +240,27 @@ export type GithubStatus = {
   last_sync: SyncRun | null;
   next_scheduled_sync_at: string | null;
   rate_limit_remaining: number | null;
+};
+
+export type ProviderStatus = {
+  selected: string;
+  known: string[];
+  can_generate: boolean;
+  chat_model: string | null;
+  embedding_model: string | null;
+  embedding_dimensions: number;
+  keys: Record<string, string | null>;
+  source: Record<string, string>;
+};
+
+export type ProviderCheck = {
+  provider: string;
+  embedding_ok: boolean;
+  embedding_error: string | null;
+  generation_ok: boolean;
+  generation_error: string | null;
+};
+
+export type RepositoryDetail = Repository & {
+  sources: Source[];
 };

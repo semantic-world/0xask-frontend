@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
 import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
+import { RunJob } from "@/components/admin/RunJob";
 import { Badge, VisibilityBadge } from "@/components/primitives/Badge";
 import type { Page, Source } from "@/lib/admin-types";
 import { api } from "@/lib/api";
@@ -77,6 +78,17 @@ export default function SourcesPage() {
       <PageHeader
         title="Sources"
         description="Where the knowledge came from. Anything marked stripped had a secret removed before it was stored, so the value itself is not here to leak."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <RunJob kind="github.sync" label="Sync from GitHub" onQueued={() => sources.reload()} />
+            <RunJob
+              kind="knowledge.extract"
+              label="Extract knowledge"
+              hint="Turns what is collected here into claims for review."
+              onQueued={() => sources.reload()}
+            />
+          </div>
+        }
       />
 
       <Panel padded={false}>

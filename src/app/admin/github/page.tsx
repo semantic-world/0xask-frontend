@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
@@ -23,6 +24,7 @@ import { useResource } from "@/lib/use-resource";
 const LIMIT = 25;
 
 export default function GithubPage() {
+  const router = useRouter();
   const status = useResource<GithubStatus>(() => api.get("/api/v1/admin/github/status"), []);
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState("");
@@ -121,10 +123,38 @@ export default function GithubPage() {
             size="sm"
             variant={row.disclosure_allowed ? "primary" : "secondary"}
             busy={pendingRepo === row.id}
-            onClick={() => void setDisclosure(row, !row.disclosure_allowed)}
+            onClick={(event) => {
+              // The row opens the repository; this button does something else
+              // entirely and must not do both.
+              event.stopPropagation();
+              void setDisclosure(row, !row.disclosure_allowed);
+            }}
           >
             {row.disclosure_allowed ? "Allowed" : "Not allowed"}
           </Button>
+        ),
+    },
+    {
+      key: "digested",
+      header: "Read",
+      hideBelow: "md",
+      align: "right",
+      render: (row) =>
+        row.sources_collected === 0 ? (
+          <span className="text-[var(--text-caption)] text-ink-faint">
+            {row.disclosure_allowed ? "awaiting sync" : "not read"}
+          </span>
+        ) : (
+          <span className="tabular font-mono text-[var(--text-caption)]">
+            <span className="text-ink-muted">{row.sources_collected} src</span>
+            <span className="text-ink-faint"> / </span>
+            <span className={row.knowledge_items ? "text-ink-muted" : "text-ink-faint"}>
+              {row.knowledge_items} claims
+            </span>
+            {row.knowledge_pending ? (
+              <span className="text-accent"> ({row.knowledge_pending} pending)</span>
+            ) : null}
+          </span>
         ),
     },
     {
@@ -293,6 +323,7 @@ export default function GithubPage() {
                   <DataTable
                     columns={columns}
                     rows={repositories.data.items}
+                    onRowClick={(row) => router.push(`/admin/github/${row.id}`)}
                     emptyState={
                       <EmptyState
                         title="Nothing discovered yet"

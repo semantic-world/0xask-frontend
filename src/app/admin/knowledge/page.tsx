@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
 import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
+import { RunJob } from "@/components/admin/RunJob";
 import { StatusBadge, VisibilityBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { SelectField, TextArea, TextField } from "@/components/primitives/Field";
@@ -87,6 +88,28 @@ export default function KnowledgePage() {
       <PageHeader
         title="Knowledge"
         description="Every fact the system holds, including the ones it will never say. Knowing what has been withheld is the point of this view."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <RunJob
+              kind="knowledge.curate"
+              label="Rebuild from content"
+              hint="Rebuilds what 0xAsk knows about the owner from the records the owner has already approved."
+              onQueued={() => knowledge.reload()}
+            />
+            <RunJob
+              kind="knowledge.extract"
+              label="Extract from repositories"
+              hint="Turns collected GitHub sources into claims for review."
+              onQueued={() => knowledge.reload()}
+            />
+            <RunJob
+              kind="knowledge.embed"
+              label="Embed"
+              hint="Gives every claim a vector, so it can be found by meaning as well as by wording."
+              onQueued={() => knowledge.reload()}
+            />
+          </div>
+        }
       />
 
       {open ? (
