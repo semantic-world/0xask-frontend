@@ -77,8 +77,8 @@ export default function ProjectDetailPage() {
     setSaved(false);
   }, [id]);
 
-  if (resource.error) return <ErrorNotice message={resource.error.message} />;
-  if (resource.loading || !resource.data) return <Skeleton rows={8} />;
+  if (resource.error && !resource.data) return <ErrorNotice message={resource.error.message} />;
+  if (!resource.data) return <Skeleton rows={8} />;
 
   const project = resource.data;
   const value = <K extends keyof Project>(field: K): Project[K] =>

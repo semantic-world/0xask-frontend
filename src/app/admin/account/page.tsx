@@ -48,11 +48,11 @@ export default function AccountPage() {
           description="The owner account cannot be removed or deactivated. It is the account that can always recover the console."
           padded={false}
         >
-          {users.error ? (
+          {users.error && !users.data ? (
             <div className="p-5">
               <ErrorNotice message={users.error.message} />
             </div>
-          ) : users.loading || !users.data ? (
+          ) : !users.data ? (
             <Skeleton rows={3} />
           ) : (
             <ul className="divide-y divide-border-subtle">

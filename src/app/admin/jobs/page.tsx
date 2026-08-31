@@ -4,7 +4,14 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Metric, Panel, Skeleton } from "@/components/admin/Panel";
+import {
+  EmptyState,
+  ErrorNotice,
+  Metric,
+  Panel,
+  RefreshBar,
+  Skeleton,
+} from "@/components/admin/Panel";
 import { StatusBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import type { Job, JobSummary } from "@/lib/admin-types";
@@ -89,9 +96,11 @@ export default function JobsPage() {
         </div>
       ) : null}
 
-      {jobs.error ? (
+      <RefreshBar active={jobs.refreshing} />
+
+      {jobs.error && !jobs.data ? (
         <ErrorNotice message={jobs.error.message} />
-      ) : jobs.loading || !jobs.data ? (
+      ) : !jobs.data ? (
         <Skeleton rows={5} />
       ) : (
         <>

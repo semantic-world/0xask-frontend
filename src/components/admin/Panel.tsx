@@ -110,3 +110,23 @@ export function Skeleton({ rows = 4 }: { rows?: number }) {
     </div>
   );
 }
+
+/**
+ * A thread of light along the top edge while data is being refetched.
+ *
+ * The alternative was replacing the panel with a skeleton, which is what made
+ * one decision on one row read as a page reload. This says the same thing
+ * without taking anything away: the content stays put, stays readable, and
+ * stays where the pointer left it.
+ */
+export function RefreshBar({ active }: { active: boolean }) {
+  return (
+    <div aria-hidden="true" className="relative h-px w-full overflow-hidden bg-transparent">
+      <span
+        className={`absolute inset-y-0 left-0 w-1/3 bg-accent transition-opacity duration-300 ${
+          active ? "animate-[sweep_1.1s_linear_infinite] opacity-70" : "opacity-0"
+        }`}
+      />
+    </div>
+  );
+}

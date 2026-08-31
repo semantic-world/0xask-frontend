@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { StatusBadge, VisibilityBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { TextField } from "@/components/primitives/Field";
@@ -139,11 +139,13 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {projects.error ? (
+        <RefreshBar active={projects.refreshing} />
+
+        {projects.error && !projects.data ? (
           <div className="p-5">
             <ErrorNotice message={projects.error.message} />
           </div>
-        ) : projects.loading || !projects.data ? (
+        ) : !projects.data ? (
           <Skeleton rows={5} />
         ) : (
           <>

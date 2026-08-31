@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { TextField } from "@/components/primitives/Field";
 import type { AuditEntry, Page } from "@/lib/admin-types";
 import { api } from "@/lib/api";
@@ -102,11 +102,13 @@ export default function AuditPage() {
           </div>
         </div>
 
-        {entries.error ? (
+        <RefreshBar active={entries.refreshing} />
+
+        {entries.error && !entries.data ? (
           <div className="p-5">
             <ErrorNotice message={entries.error.message} />
           </div>
-        ) : entries.loading || !entries.data ? (
+        ) : !entries.data ? (
           <Skeleton rows={6} />
         ) : (
           <>

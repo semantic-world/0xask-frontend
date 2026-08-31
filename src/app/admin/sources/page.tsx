@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { Badge, VisibilityBadge } from "@/components/primitives/Badge";
 import type { Page, Source } from "@/lib/admin-types";
 import { api } from "@/lib/api";
@@ -80,11 +80,13 @@ export default function SourcesPage() {
       />
 
       <Panel padded={false}>
-        {sources.error ? (
+        <RefreshBar active={sources.refreshing} />
+
+        {sources.error && !sources.data ? (
           <div className="p-5">
             <ErrorNotice message={sources.error.message} />
           </div>
-        ) : sources.loading || !sources.data ? (
+        ) : !sources.data ? (
           <Skeleton rows={5} />
         ) : (
           <>

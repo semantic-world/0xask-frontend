@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
-import { ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { Badge, VisibilityBadge } from "@/components/primitives/Badge";
 import { Toggle } from "@/components/primitives/Field";
 import type { Policy } from "@/lib/admin-types";
@@ -46,9 +46,11 @@ export default function PoliciesPage() {
         </div>
       ) : null}
 
-      {policies.error ? (
+      <RefreshBar active={policies.refreshing} />
+
+      {policies.error && !policies.data ? (
         <ErrorNotice message={policies.error.message} />
-      ) : policies.loading || !policies.data ? (
+      ) : !policies.data ? (
         <Skeleton rows={4} />
       ) : (
         <div className="space-y-3">

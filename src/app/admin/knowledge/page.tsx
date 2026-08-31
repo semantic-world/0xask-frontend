@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { StatusBadge, VisibilityBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { SelectField, TextArea, TextField } from "@/components/primitives/Field";
@@ -133,11 +133,13 @@ export default function KnowledgePage() {
           />
         </div>
 
-        {knowledge.error ? (
+        <RefreshBar active={knowledge.refreshing} />
+
+        {knowledge.error && !knowledge.data ? (
           <div className="p-5">
             <ErrorNotice message={knowledge.error.message} />
           </div>
-        ) : knowledge.loading || !knowledge.data ? (
+        ) : !knowledge.data ? (
           <Skeleton rows={6} />
         ) : (
           <>

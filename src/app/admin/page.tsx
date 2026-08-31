@@ -17,7 +17,7 @@ export default function DashboardPage() {
     return <ErrorNotice message={dashboard.error.message} />;
   }
 
-  if (dashboard.loading || !dashboard.data) {
+  if (!dashboard.data) {
     return <Skeleton rows={6} />;
   }
 

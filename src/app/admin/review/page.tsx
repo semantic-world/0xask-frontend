@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Panel, Skeleton } from "@/components/admin/Panel";
+import { EmptyState, ErrorNotice, Panel, RefreshBar, Skeleton } from "@/components/admin/Panel";
 import { Badge, VisibilityBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { SelectField } from "@/components/primitives/Field";
@@ -94,9 +94,24 @@ export default function ReviewPage() {
         reason,
       });
       setSelected(new Set());
+
+      // Decided claims leave the queue, so they go now rather than after a
+      // round trip that rebuilds the table underneath the reviewer. Working
+      // through a queue of fifty means fifty of these, and a redraw each time
+      // loses their place every time.
+      const decided = new Set(ids);
+      queue.mutate((page) => ({
+        ...page,
+        total: Math.max(0, page.total - decided.size),
+        items: page.items.filter((item) => !decided.has(item.id)),
+      }));
+
+      // Then refill quietly, so the next page of work arrives without the
+      // reviewer waiting for it.
       queue.reload();
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : "Could not apply that decision.");
+      queue.reload();
     } finally {
       setBusy(false);
     }
@@ -151,11 +166,13 @@ export default function ReviewPage() {
           </div>
         </div>
 
-        {queue.error ? (
+        <RefreshBar active={queue.refreshing} />
+
+        {queue.error && !queue.data ? (
           <div className="p-5">
             <ErrorNotice message={queue.error.message} />
           </div>
-        ) : queue.loading || !queue.data ? (
+        ) : !queue.data ? (
           <Skeleton rows={6} />
         ) : (
           <>

@@ -4,7 +4,14 @@ import { useState } from "react";
 import { PageHeader } from "@/components/admin/AdminShell";
 import type { Column } from "@/components/admin/DataTable";
 import { DataTable, Pager } from "@/components/admin/DataTable";
-import { EmptyState, ErrorNotice, Metric, Panel, Skeleton } from "@/components/admin/Panel";
+import {
+  EmptyState,
+  ErrorNotice,
+  Metric,
+  Panel,
+  RefreshBar,
+  Skeleton,
+} from "@/components/admin/Panel";
 import { Badge, StatusBadge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { TextField } from "@/components/primitives/Field";
@@ -55,13 +62,28 @@ export default function GithubPage() {
   async function setDisclosure(repository: Repository, allowed: boolean) {
     setPendingRepo(repository.id);
     setError(null);
+
+    // The row flips now, not when the server gets back. Allowing a repository
+    // is a decision the owner has already made; the interface should agree
+    // with them immediately and correct itself only if the server disagrees.
+    const swap = (value: boolean) => (page: PageOf<Repository>) => ({
+      ...page,
+      items: page.items.map((item) =>
+        item.id === repository.id ? { ...item, disclosure_allowed: value } : item,
+      ),
+    });
+
+    repositories.mutate(swap(allowed));
+
     try {
       await api.patch(`/api/v1/admin/github/repositories/${repository.id}`, {
         disclosure_allowed: allowed,
       });
-      repositories.reload();
+      // The tracked count in the header moved, so it is refetched quietly.
+      // Nothing on screen is torn down while that happens.
       status.reload();
     } catch (caught) {
+      repositories.mutate(swap(repository.disclosure_allowed));
       setError(caught instanceof ApiError ? caught.message : "Could not change that repository.");
     } finally {
       setPendingRepo(null);
@@ -130,8 +152,8 @@ export default function GithubPage() {
     },
   ];
 
-  if (status.error) return <ErrorNotice message={status.error.message} />;
-  if (status.loading || !status.data) return <Skeleton rows={6} />;
+  if (status.error && !status.data) return <ErrorNotice message={status.error.message} />;
+  if (!status.data) return <Skeleton rows={6} />;
 
   const connected = status.data.connected;
 
@@ -209,7 +231,7 @@ export default function GithubPage() {
             </Panel>
 
             <Panel title="Recent syncs" padded={false}>
-              {runs.loading || !runs.data ? (
+              {!runs.data ? (
                 <Skeleton rows={3} />
               ) : runs.data.length === 0 ? (
                 <EmptyState title="Nothing has run yet" hint="Press Sync now to discover." />
@@ -262,7 +284,9 @@ export default function GithubPage() {
                 </div>
               </div>
 
-              {repositories.loading || !repositories.data ? (
+              <RefreshBar active={repositories.refreshing} />
+
+              {!repositories.data ? (
                 <Skeleton rows={5} />
               ) : (
                 <>

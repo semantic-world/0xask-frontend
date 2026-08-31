@@ -48,8 +48,8 @@ export default function SettingsPage() {
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  if (settings.error) return <ErrorNotice message={settings.error.message} />;
-  if (settings.loading || !settings.data) return <Skeleton rows={6} />;
+  if (settings.error && !settings.data) return <ErrorNotice message={settings.error.message} />;
+  if (!settings.data) return <Skeleton rows={6} />;
 
   const byKey = new Map(settings.data.map((setting) => [setting.key, setting]));
   const dirty = Object.keys(draft).length > 0;

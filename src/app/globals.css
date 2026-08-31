@@ -534,6 +534,20 @@
     }
   }
 
+  /* The admin console's refresh indicator: a thread of light crossing the top
+     of a panel while its data is being refetched, so a background refresh is
+     visible without the content being taken away in order to say so. Named
+     apart from the marquee's `slide`, which travels a different distance for
+     a different reason. */
+  @keyframes sweep {
+    from {
+      transform: translate3d(-100%, 0, 0);
+    }
+    to {
+      transform: translate3d(400%, 0, 0);
+    }
+  }
+
   /* Fades the ends of a scrolling row so names arrive rather than appear. */
   .edge-fade {
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
