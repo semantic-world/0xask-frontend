@@ -53,13 +53,19 @@ export default async function AskPage() {
   return (
     <div className="shell-width flex min-h-[calc(100svh-var(--header-height)-4rem)] flex-col justify-center py-16">
       <div className="mx-auto w-full max-w-2xl">
-        <p className="text-center font-mono text-[var(--text-caption)] uppercase tracking-[0.2em] text-ink-faint">
-          0xAsk
+        <p className="mx-auto flex w-fit items-center gap-2.5 rounded-full border border-border-subtle bg-surface/60 px-3.5 py-1.5 font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-muted backdrop-blur-sm">
+          <span
+            aria-hidden="true"
+            className={`pulse-dot size-1.5 rounded-full ${
+              status.available ? "bg-positive" : "bg-caution"
+            }`}
+          />
+          <span className="text-accent">0x</span>Ask
         </p>
-        <h1 className="mt-5 text-center text-[length:var(--text-h1)] font-medium">
-          Ask about the work
+        <h1 className="mt-8 text-center text-[length:var(--text-h1)] font-medium tracking-[-0.035em]">
+          <span className="text-gradient">Ask about the work</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-[48ch] text-center text-ink-muted">
+        <p className="mx-auto mt-6 max-w-[48ch] text-center text-[length:var(--text-lead)] text-ink-muted">
           Not a general assistant. It answers from a curated body of approved knowledge, cites the
           evidence behind every claim, and says so when the evidence is not there.
         </p>

@@ -39,10 +39,10 @@ export default async function ExperiencePage() {
   return (
     <div className="shell-width py-14 sm:py-20">
       <header className="mb-12">
-        <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
+        <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-muted backdrop-blur-sm">
           Experience
         </p>
-        <h1 className="mt-4 max-w-[20ch] text-[length:var(--text-h1)] font-medium">
+        <h1 className="mt-6 max-w-[20ch] text-[length:var(--text-h1)] font-medium leading-[1] tracking-[-0.04em]">
           Where the work happened
         </h1>
       </header>

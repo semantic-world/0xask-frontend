@@ -5,9 +5,12 @@ import { usePathname } from "next/navigation";
 import { ASK_ROUTE, modeForPath } from "@/lib/mode";
 
 /**
- * The signature control of the product. It does not change a colour scheme, it
- * changes how the visitor relates to the same body of work: browse it, or ask
- * about it.
+ * The signature control of the product.
+ *
+ * It does not change a colour scheme, it changes how the visitor relates to
+ * the same body of work: browse it, or ask about it. The thumb travels with a
+ * slight overshoot, which is what makes it read as a physical switch rather
+ * than a pair of links that happen to highlight.
  */
 export function ModeToggle() {
   const pathname = usePathname();
@@ -16,17 +19,17 @@ export function ModeToggle() {
   return (
     <nav
       aria-label="Experience mode"
-      className="relative isolate flex items-center rounded-full border border-border-subtle bg-surface-sunken p-0.5"
+      className="relative isolate flex items-center rounded-full border border-border-subtle bg-surface-sunken/80 p-[3px] backdrop-blur-sm"
     >
       <span
         aria-hidden="true"
-        className="absolute inset-y-0.5 left-0.5 -z-10 w-[calc(50%-0.125rem)] rounded-full bg-surface shadow-sm ring-1 ring-border-subtle transition-transform duration-[420ms] ease-[var(--ease-spring)]"
+        className="absolute inset-y-[3px] left-[3px] -z-10 w-[calc(50%-3px)] rounded-full bg-surface shadow-[var(--shadow-lift-1)] ring-1 ring-border-subtle transition-transform duration-[520ms] ease-[var(--ease-spring)]"
         style={{ transform: mode === "ask" ? "translateX(100%)" : "translateX(0)" }}
       />
       <Link
         href="/"
         aria-current={mode === "classic" ? "page" : undefined}
-        className={`min-w-[4.75rem] rounded-full px-3 py-1.5 text-center text-[var(--text-caption)] font-medium uppercase tracking-[0.09em] transition-colors duration-200 ${
+        className={`min-w-[4.5rem] rounded-full px-3.5 py-1.5 text-center text-[var(--text-caption)] font-medium uppercase tracking-[0.1em] transition-colors duration-300 ${
           mode === "classic" ? "text-ink" : "text-ink-faint hover:text-ink-muted"
         }`}
       >
@@ -35,11 +38,11 @@ export function ModeToggle() {
       <Link
         href={ASK_ROUTE}
         aria-current={mode === "ask" ? "page" : undefined}
-        className={`min-w-[4.75rem] rounded-full px-3 py-1.5 text-center font-mono text-[var(--text-caption)] font-medium tracking-[0.06em] transition-colors duration-200 ${
+        className={`min-w-[4.5rem] rounded-full px-3.5 py-1.5 text-center font-mono text-[var(--text-caption)] font-medium tracking-[0.06em] transition-colors duration-300 ${
           mode === "ask" ? "text-ink" : "text-ink-faint hover:text-ink-muted"
         }`}
       >
-        0xAsk
+        <span className={mode === "ask" ? "text-accent" : ""}>0x</span>Ask
       </Link>
     </nav>
   );

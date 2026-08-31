@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { categoryLabel } from "@/components/classic/ProjectCard";
 import { Prose, TagList } from "@/components/classic/Section";
+import { Reveal } from "@/components/motion/Reveal";
 import { breadcrumbSchema, projectSchema, StructuredData } from "@/components/StructuredData";
 import { getProject, type ProjectDetail } from "@/lib/server-api";
 import { SITE } from "@/lib/site";
@@ -94,17 +95,22 @@ export default async function ProjectPage({ params }: Params) {
         </Link>
       </nav>
 
-      <header className="border-b border-border-subtle pb-12">
-        <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-faint">
+      <header className="relative border-b border-border-subtle pb-12">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 -top-28 -z-10 size-[26rem] rounded-full bg-accent opacity-[0.07] blur-[90px]"
+        />
+
+        <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-muted backdrop-blur-sm">
           {categoryLabel(project.category)}
         </p>
 
-        <h1 className="mt-4 max-w-[18ch] text-[length:var(--text-h1)] font-medium">
+        <h1 className="mt-6 max-w-[16ch] text-[length:var(--text-h1)] font-medium leading-[0.98] tracking-[-0.04em]">
           {project.name}
         </h1>
 
         {project.tagline ? (
-          <p className="mt-5 max-w-[58ch] text-[length:var(--text-lead)] text-ink-muted">
+          <p className="mt-6 max-w-[56ch] text-[length:var(--text-lead)] leading-relaxed text-ink-muted">
             {project.tagline}
           </p>
         ) : null}
@@ -168,22 +174,31 @@ export default async function ProjectPage({ params }: Params) {
         </section>
       ) : null}
 
-      {present.map((section) => (
-        <section
+      {present.map((section, index) => (
+        <Reveal
+          as="section"
           key={String(section.field)}
-          className="border-t border-border-subtle py-12"
-          id={String(section.field)}
+          delay={index * 40}
+          className="relative border-t border-border-subtle py-14"
         >
-          <div className="grid gap-6 lg:grid-cols-[8rem_1fr]">
-            <header>
-              <p className="font-mono text-[var(--text-caption)] tracking-[0.16em] text-ink-faint">
+          <div id={String(section.field)} className="grid gap-6 lg:grid-cols-[9rem_1fr]">
+            <header className="relative lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:self-start">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -left-1 -top-7 select-none font-mono text-[4.5rem] font-semibold leading-none text-ink opacity-[0.05]"
+              >
+                {section.eyebrow}
+              </span>
+              <p className="relative font-mono text-[var(--text-caption)] tracking-[0.18em] text-accent">
                 {section.eyebrow}
               </p>
-              <h2 className="mt-2 text-[length:var(--text-h4)] font-medium">{section.title}</h2>
+              <h2 className="relative mt-2 text-[length:var(--text-h4)] font-medium tracking-[-0.02em]">
+                {section.title}
+              </h2>
             </header>
             <Prose text={project[section.field] as string} />
           </div>
-        </section>
+        </Reveal>
       ))}
 
       {evidence.length ? (
@@ -202,7 +217,7 @@ export default async function ProjectPage({ params }: Params) {
                     href={entry.url}
                     rel="noopener noreferrer me"
                     target="_blank"
-                    className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-border-strong px-4 py-2 text-[var(--text-small)] font-medium transition-colors duration-300 hover:border-accent hover:text-accent"
+                    className="inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface/50 px-5 py-2.5 text-[var(--text-small)] font-medium backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent hover:shadow-[var(--shadow-glow)]"
                   >
                     {entry.label}
                     <span aria-hidden="true">&#8599;</span>

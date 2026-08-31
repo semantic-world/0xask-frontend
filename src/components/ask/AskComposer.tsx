@@ -142,7 +142,7 @@ export function AskComposer({ suggestions, available, reason }: Props) {
           event.preventDefault();
           void submit();
         }}
-        className="group relative rounded-[var(--radius-lg)] border border-border-subtle bg-surface transition-colors duration-300 focus-within:border-accent"
+        className="group relative rounded-[var(--radius-xl)] border border-border-subtle bg-surface/80 shadow-[var(--shadow-lift-2)] backdrop-blur-sm transition-all duration-500 ease-[var(--ease-out)] focus-within:border-accent focus-within:shadow-[var(--shadow-glow)]"
       >
         <label htmlFor="ask-input" className="sr-only">
           Ask about the engineering work of 0xSemantic
@@ -176,10 +176,16 @@ export function AskComposer({ suggestions, available, reason }: Props) {
           <button
             type="submit"
             disabled={!value.trim() || asking || !available}
-            className="pointer-events-auto inline-flex h-9 items-center gap-2 rounded-[var(--radius)] bg-accent px-4 text-[var(--text-small)] font-medium text-accent-ink transition-all duration-300 ease-[var(--ease-out)] disabled:cursor-not-allowed disabled:opacity-35 enabled:active:scale-[0.97]"
+            className="pointer-events-auto inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-[var(--text-small)] font-medium text-accent-ink shadow-[var(--shadow-lift-1)] transition-all duration-300 ease-[var(--ease-out)] disabled:cursor-not-allowed disabled:opacity-35 enabled:hover:shadow-[var(--shadow-glow)] enabled:active:scale-[0.97]"
           >
             {asking ? "Thinking" : "Ask"}
-            <span aria-hidden="true">{asking ? "" : "→"}</span>
+            <span aria-hidden="true">
+              {asking ? (
+                <span className="block size-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                "\u2192"
+              )}
+            </span>
           </button>
         </div>
       </form>
@@ -218,7 +224,7 @@ export function AskComposer({ suggestions, available, reason }: Props) {
                 type="button"
                 disabled={!available}
                 onClick={() => applySuggestion(suggestion)}
-                className="rounded-full border border-border-subtle px-3.5 py-1.5 text-left text-[var(--text-small)] text-ink-muted transition-all duration-200 hover:border-border-strong hover:text-ink disabled:opacity-45 enabled:active:scale-[0.97]"
+                className="rounded-full border border-border-subtle bg-surface/50 px-3.5 py-1.5 text-left text-[var(--text-small)] text-ink-muted backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:text-ink hover:shadow-[var(--shadow-lift-1)] disabled:opacity-45 disabled:hover:translate-y-0 enabled:active:scale-[0.97]"
               >
                 {suggestion}
               </button>
@@ -234,7 +240,7 @@ function AnswerPanel({ result }: { result: Result }) {
   return (
     <section
       aria-live="polite"
-      className="mt-6 overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface"
+      className="mt-6 overflow-hidden rounded-[var(--radius-xl)] border border-border-subtle bg-surface/80 shadow-[var(--shadow-lift-2)] backdrop-blur-sm"
     >
       {result.text ? (
         <div className="border-b border-border-subtle px-5 py-5">

@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { ModeToggle } from "@/components/layout/ModeToggle";
+import { NavLink } from "@/components/layout/NavLink";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
-// Writing is deliberately absent. There is no content source for it yet, and
-// a navigation item leading to an empty page is worse than no item.
 const NAV = [
   { href: "/projects", label: "Work" },
   { href: "/experience", label: "Experience" },
@@ -15,25 +14,22 @@ const NAV = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 pad-safe-top border-b border-border-subtle bg-paper/80 backdrop-blur-xl backdrop-saturate-150">
+    <header className="sticky top-0 z-50 pad-safe-top border-b border-border-subtle/70 bg-paper/70 backdrop-blur-2xl backdrop-saturate-150">
       <div className="shell-width flex h-[var(--header-height)] items-center gap-4">
         <Link
           href="/"
+          aria-label="0xSemantic, home"
           className="group flex shrink-0 items-baseline gap-px font-mono text-[0.95rem] font-semibold tracking-tight"
         >
-          <span className="text-accent transition-colors duration-300">0x</span>
+          <span className="text-accent transition-[text-shadow] duration-500 group-hover:[text-shadow:0_0_18px_var(--accent)]">
+            0x
+          </span>
           <span className="text-ink">Semantic</span>
         </Link>
 
-        <nav aria-label="Primary" className="ml-2 hidden items-center gap-1 lg:flex">
+        <nav aria-label="Primary" className="ml-3 hidden items-center gap-0.5 lg:flex">
           {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-[var(--radius-sm)] px-2.5 py-1.5 text-[var(--text-small)] text-ink-muted transition-colors duration-200 hover:bg-surface-sunken hover:text-ink"
-            >
-              {item.label}
-            </Link>
+            <NavLink key={item.href} href={item.href} label={item.label} />
           ))}
         </nav>
 

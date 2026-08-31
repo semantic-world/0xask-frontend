@@ -26,6 +26,13 @@ export type AdminUser = {
   last_login_at: string | null;
 };
 
+export type AdminUserDetail = AdminUser & {
+  is_active: boolean;
+  created_at: string;
+  locked_until: string | null;
+  is_self: boolean;
+};
+
 export type Session = {
   user: AdminUser;
   expires_at: string;
