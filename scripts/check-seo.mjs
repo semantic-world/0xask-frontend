@@ -87,6 +87,20 @@ async function main() {
     const title = page.body.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim();
     if (!title) fail(`${path} has no title`);
     else if (title.length < 10) fail(`${path} has a title of ${title.length} characters`);
+    // A search result shows roughly sixty characters. Longer is not an error,
+    // but everything past the cut is written and never read, so it is worth
+    // being told about.
+    else if (title.length > 70) {
+      fail(`${path} has a title of ${title.length} characters, which will be truncated`);
+    }
+    // The same words twice usually means a template appended what the page had
+    // already said.
+    else {
+      const halves = title.split(" | ");
+      if (halves.length === 2 && halves[0] === halves[1]) {
+        fail(`${path} repeats itself in the title: ${title}`);
+      }
+    }
 
     const description = page.body.match(/<meta[^>]+name="description"[^>]+content="([^"]*)"/i)?.[1];
     if (!description?.trim()) fail(`${path} has no meta description`);

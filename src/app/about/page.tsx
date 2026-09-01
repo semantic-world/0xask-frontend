@@ -26,11 +26,32 @@ import {
  */
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/about" },
-  title: "About",
-  description: "Who Levi Chinecherem Chidi is, what he works on, and the credentials behind it.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Named from the record, so it stays whatever he says it is.
+  let name = "";
+  let headline = "";
+
+  try {
+    const profile = await getProfile();
+    name = profile.full_name;
+    headline = profile.headline;
+  } catch {
+    // Unpublished or unreachable. A generic title is still a correct one.
+  }
+
+  return {
+    alternates: { canonical: "/about" },
+    // Deliberately the name rather than the word "About". This is the page a
+    // search for the person should land on, and a title of "About" tells a
+    // search engine nothing about whom.
+    // Absolute, because the layout template appends the name to every title
+    // and this one already is the name. Without it the tab reads it twice.
+    title: { absolute: name ? `${name}, about` : "About" },
+    description: name
+      ? `${name}${headline ? `, ${headline}` : ""}. Background, education, certifications, and how to reach him.`
+      : "Background, education, certifications, and how to get in touch.",
+  };
+}
 
 export default async function AboutPage() {
   try {

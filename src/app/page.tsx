@@ -82,13 +82,21 @@ export default async function HomePage() {
           {/* His own line, from the profile, rather than one written into the
               site. The most prominent sentence on a portfolio should be the
               owner's. */}
+          {/* The name sits inside the heading, under his own line rather than
+              over it.
+              
+              Visually nothing moves: the statement still leads, because the
+              most prominent sentence on a portfolio should be the owner's. But
+              the name is now part of the one heading on the page instead of a
+              caption beneath it, which is what a search for the person reads.
+              It was a paragraph, and it appeared exactly once on the whole
+              page. */}
           <h1 className="mt-8 max-w-[17ch] text-[length:var(--text-display)] font-medium leading-[0.95] tracking-[-0.04em]">
             <span className="text-gradient">{profile.statement ?? profile.headline}</span>
+            <span className="mt-6 block font-mono text-[var(--text-caption)] font-normal uppercase leading-normal tracking-[0.14em] text-ink-faint">
+              {profile.full_name}
+            </span>
           </h1>
-
-          <p className="mt-6 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-faint">
-            {profile.full_name}
-          </p>
         </Reveal>
 
         <Reveal delay={160}>
