@@ -5,7 +5,7 @@ import { ModeSync } from "@/components/layout/ModeSync";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
-import { SITE } from "@/lib/site";
+import { SEARCH, SITE } from "@/lib/site";
 import { themeBootScript } from "@/lib/theme";
 import "./globals.css";
 
@@ -44,6 +44,13 @@ export const metadata: Metadata = {
     url: SITE.origin,
   },
   twitter: { card: "summary_large_image" },
+  // Ownership proofs, and only when configured. An empty verification value
+  // renders an empty tag, which reads to a crawler as a claim that failed
+  // rather than as a claim that was never made.
+  verification: {
+    ...(SEARCH.google ? { google: SEARCH.google } : {}),
+    ...(SEARCH.bing ? { other: { "msvalidate.01": SEARCH.bing } } : {}),
+  },
 };
 
 export const viewport: Viewport = {

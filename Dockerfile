@@ -50,6 +50,11 @@ COPY --from=builder --chown=app:app /build/.next/static ./.next/static
 
 USER app
 
+# The port is a variable with a default. A platform that deploys this decides
+# where it should listen and says so through PORT; the Next.js standalone
+# server already reads it, so only the health check needed teaching.
+ENV PORT=3000
+
 EXPOSE 3000
 
 # Checks this container, not the whole stack. Reaching through to the API would
@@ -57,6 +62,6 @@ EXPOSE 3000
 # has been migrated, which is both wrong and the point at which someone is most
 # likely to be misled by it. The manifest is served by this process alone.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD node -e "require('http').get('http://127.0.0.1:3000/manifest.webmanifest',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+    CMD node -e "const p=process.env.PORT||3000;require('http').get('http://127.0.0.1:'+p+'/manifest.webmanifest',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
 
 CMD ["node", "server.js"]

@@ -11,7 +11,8 @@
     "format": "biome check --write .",
     "lint:dashes": "./scripts/check-dashes.sh",
     "check": "npm run lint && npm run lint:dashes && npm run typecheck",
-    "lint:bundle": "node scripts/check-bundle.mjs"
+    "lint:bundle": "node scripts/check-bundle.mjs",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "next": "^16.3.3",

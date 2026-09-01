@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "@/components/classic/Breadcrumbs";
 import { categoryLabel } from "@/components/classic/ProjectCard";
 import { Prose, TagList } from "@/components/classic/Section";
 import { Reveal } from "@/components/motion/Reveal";
@@ -85,15 +85,16 @@ export default async function ProjectPage({ params }: Params) {
         ])}
       />
 
-      <nav aria-label="Breadcrumb" className="mb-8">
-        <Link
-          href="/projects"
-          className="inline-flex items-center gap-2 font-mono text-[var(--text-caption)] uppercase tracking-[0.12em] text-ink-faint transition-colors hover:text-ink-muted"
-        >
-          <span aria-hidden="true">&larr;</span>
-          All work
-        </Link>
-      </nav>
+      {/* A trail, not a back link. It was labelled as a breadcrumb and was
+          one entry, which told a visitor arriving from a search result where
+          to go next but not where they were. */}
+      <Breadcrumbs
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/projects" },
+          { name: project.name },
+        ]}
+      />
 
       <header className="relative border-b border-border-subtle pb-12">
         <span

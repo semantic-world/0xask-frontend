@@ -3,6 +3,12 @@ import Link from "next/link";
 import { Prose, Section } from "@/components/classic/Section";
 import { Reveal } from "@/components/motion/Reveal";
 import {
+  breadcrumbSchema,
+  expertiseSchema,
+  profilePageSchema,
+  StructuredData,
+} from "@/components/StructuredData";
+import {
   getCredentials,
   getExperience,
   getProfile,
@@ -45,6 +51,15 @@ export default async function AboutPage() {
 
     return (
       <div className="shell-width py-14 sm:py-20">
+        <StructuredData data={profilePageSchema(profile)} />
+        <StructuredData data={expertiseSchema(profile, featured)} />
+        <StructuredData
+          data={breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "About", path: "/about" },
+          ])}
+        />
+
         <header className="mb-14">
           <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-muted backdrop-blur-sm">
             About

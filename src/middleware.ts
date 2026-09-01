@@ -59,6 +59,27 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(target);
   }
 
+  // The IndexNow key file.
+  //
+  // The protocol asks that the key be fetchable at the host being claimed, as
+  // proof that whoever submits addresses controls the site. It lives here
+  // rather than in `public/` so the key stays an environment value: a key
+  // committed to a repository is one that has to be rotated the moment the
+  // repository goes public, which this one is about to.
+  //
+  // Only the configured name answers. Any other is a 404, so this cannot be
+  // used to discover whether a key is set or what it is.
+  const indexNowKey = process.env.NEXT_PUBLIC_INDEXNOW_KEY;
+  if (indexNowKey && request.nextUrl.pathname === `/${indexNowKey}.txt`) {
+    return new NextResponse(indexNowKey, {
+      status: 200,
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": "public, max-age=3600",
+      },
+    });
+  }
+
   const nonce = btoa(crypto.randomUUID());
   const isProduction = process.env.NODE_ENV === "production";
 

@@ -86,3 +86,69 @@ export function breadcrumbSchema(
     })),
   };
 }
+
+/**
+ * The work, as a list a search engine can read as one.
+ *
+ * A listing page without this is a page of links. With it, the collection
+ * itself is an entity, and the ordering is a statement about which work the
+ * owner leads with rather than an accident of the markup.
+ */
+export function projectListSchema(
+  projects: Array<{ slug: string; name: string; tagline: string | null }>,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.origin}/projects#list`,
+    name: "Engineering work",
+    numberOfItems: projects.length,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    itemListElement: projects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${SITE.origin}/projects/${project.slug}`,
+      name: project.name,
+      ...(project.tagline ? { description: project.tagline } : {}),
+    })),
+  };
+}
+
+/**
+ * The about page, as a page about a person rather than a page that mentions one.
+ *
+ * `ProfilePage` is the type search engines use to decide that a page is the
+ * authoritative description of an entity, which is exactly what this one is.
+ */
+export function profilePageSchema(profile: Profile): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${SITE.origin}/about#profile`,
+    url: `${SITE.origin}/about`,
+    name: profile.full_name,
+    description: profile.summary ?? profile.headline,
+    mainEntity: { "@id": `${SITE.origin}/#person` },
+    isPartOf: { "@id": `${SITE.origin}/#website` },
+  };
+}
+
+/**
+ * What the person actually knows, tied to what demonstrates it.
+ *
+ * `knowsAbout` is the property that carries a person's expertise into an
+ * entity graph. Emitted from the same records the skills page renders, so it
+ * cannot claim a competence the site does not show evidence for.
+ */
+export function expertiseSchema(
+  profile: Profile,
+  skills: Array<{ name: string }>,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE.origin}/#person`,
+    name: profile.full_name,
+    ...(skills.length ? { knowsAbout: skills.map((skill) => skill.name) } : {}),
+  };
+}

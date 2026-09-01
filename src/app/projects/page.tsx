@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EmptyNotice } from "@/components/classic/Section";
 import { WorkTabs } from "@/components/classic/WorkTabs";
 import { Reveal } from "@/components/motion/Reveal";
+import { breadcrumbSchema, projectListSchema, StructuredData } from "@/components/StructuredData";
 import { getProjects, NotPublished } from "@/lib/server-api";
 
 /**
@@ -35,6 +36,14 @@ export default async function ProjectsPage() {
 
   return (
     <div className="shell-width py-14 sm:py-20">
+      <StructuredData data={projectListSchema(projects)} />
+      <StructuredData
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/projects" },
+        ])}
+      />
+
       <header className="mb-10">
         <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-muted backdrop-blur-sm">
           Work
