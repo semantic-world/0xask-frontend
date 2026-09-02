@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+// Addressed by literal IPv4 rather than "localhost", which resolves to ::1
+// first on most Linux hosts while the API server binds IPv4 only.
+const backendOrigin = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8000";
+
 /**
  * Security headers.
  *
@@ -68,6 +72,28 @@ const config: NextConfig = {
           { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
           { key: "Service-Worker-Allowed", value: "/" },
         ],
+      },
+    ];
+  },
+
+  /**
+   * The browser reaches the API through this origin, never directly.
+   *
+   * That is what keeps the session cookie first party: the console signs in
+   * against the site's own host rather than the backend's, so the cookie is
+   * same site and no cross origin credentials are involved anywhere.
+   *
+   * Deleted by mistake while packaging the production image, which broke every
+   * client side call in the console. `/api/v1/admin/auth/session` reached the
+   * Next application, which has no such route, and the answer was a 500. The
+   * console could not tell whether anyone was signed in, and never got as far
+   * as offering the form.
+   */
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendOrigin}/api/:path*`,
       },
     ];
   },
