@@ -99,7 +99,10 @@ export default async function ProjectPage({ params }: Params) {
       <header className="relative border-b border-border-subtle pb-12">
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -left-24 -top-28 -z-10 size-[26rem] rounded-full bg-accent opacity-[0.07] blur-[90px]"
+          // Smaller on a phone, where a 26rem circle offset to the left still
+          // reaches past the right edge of the screen and makes the whole page
+          // scroll sideways for the sake of a decoration nobody can see.
+          className="pointer-events-none absolute -left-16 -top-28 -z-10 size-[17rem] rounded-full bg-accent opacity-[0.07] blur-[90px] sm:-left-24 sm:size-[26rem]"
         />
 
         <p className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/60 px-3 py-1 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-muted backdrop-blur-sm">

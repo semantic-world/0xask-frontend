@@ -34,9 +34,16 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex min-w-0 items-center gap-2">
           <ModeToggle />
-          <ThemeToggle />
+          {/* Below the small breakpoint the appearance control moves into the
+              menu. Three controls plus the wordmark do not fit across a phone,
+              and the header overflowed by around eighty pixels, which put the
+              menu button itself off the screen and made every page scroll
+              sideways. Of the three this is the one a visitor sets once. */}
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
           <MobileNav items={NAV} />
         </div>
       </div>

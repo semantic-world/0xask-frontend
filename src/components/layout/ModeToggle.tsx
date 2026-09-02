@@ -29,7 +29,7 @@ export function ModeToggle() {
       <Link
         href="/"
         aria-current={mode === "classic" ? "page" : undefined}
-        className={`min-w-[4.5rem] rounded-full px-3.5 py-1.5 text-center text-[var(--text-caption)] font-medium uppercase tracking-[0.1em] transition-colors duration-300 ${
+        className={`rounded-full px-2.5 py-1.5 text-center text-[0.6875rem] font-medium uppercase tracking-[0.1em] transition-colors duration-300 sm:min-w-[4.5rem] sm:px-3.5 sm:text-[length:var(--text-caption)] ${
           mode === "classic" ? "text-ink" : "text-ink-faint hover:text-ink-muted"
         }`}
       >
@@ -38,7 +38,7 @@ export function ModeToggle() {
       <Link
         href={ASK_ROUTE}
         aria-current={mode === "ask" ? "page" : undefined}
-        className={`min-w-[4.5rem] rounded-full px-3.5 py-1.5 text-center font-mono text-[var(--text-caption)] font-medium tracking-[0.06em] transition-colors duration-300 ${
+        className={`rounded-full px-2.5 py-1.5 text-center font-mono text-[0.6875rem] font-medium tracking-[0.06em] transition-colors duration-300 sm:min-w-[4.5rem] sm:px-3.5 sm:text-[length:var(--text-caption)] ${
           mode === "ask" ? "text-ink" : "text-ink-faint hover:text-ink-muted"
         }`}
       >

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 /**
  * Navigation for every viewport the desktop bar does not cover.
@@ -129,6 +130,16 @@ export function MobileNav({ items }: { items: readonly { href: string; label: st
                 );
               })}
             </ul>
+
+            {/* The appearance control, for the widths where the header has no
+                room for it. Above that breakpoint it is in the bar and showing
+                it twice would be two controls for one setting. */}
+            <div className="mt-4 flex items-center justify-between gap-3 sm:hidden">
+              <span className="font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-faint">
+                Appearance
+              </span>
+              <ThemeToggle />
+            </div>
           </nav>
         </div>
       </div>

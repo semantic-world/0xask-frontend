@@ -511,6 +511,12 @@
       opacity 620ms var(--ease-out),
       transform 620ms var(--ease-out);
     will-change: opacity, transform;
+    /* A wrapper that exists to fade its content in should be invisible to
+       layout, and this is the one way it was not. As a grid or flex child it
+       took the automatic minimum size, which is its content's minimum rather
+       than zero, so a card grid on a narrow phone resolved a column wider than
+       the container it sat in and pushed the whole document sideways. */
+    min-width: 0;
   }
 
   .reveal[data-shown="true"] {
