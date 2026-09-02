@@ -225,7 +225,11 @@
   --text-h3: clamp(1.375rem, 1.2rem + 0.85vw, 1.9375rem);
   --text-h2: clamp(1.75rem, 1.42rem + 1.6vw, 2.75rem);
   --text-h1: clamp(2.25rem, 1.6rem + 3.1vw, 4rem);
-  --text-display: clamp(2.75rem, 1.5rem + 6vw, 6rem);
+  /* The hero, and only the hero. Sized for the sentence it actually holds:
+     the statement is a full sentence rather than a three word slogan, and at
+     the previous ceiling of 6rem it filled the viewport on a laptop and left
+     no room for anything else. */
+  --text-display: clamp(2.125rem, 1.2rem + 3.6vw, 3.75rem);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -536,10 +540,15 @@
 
   /* The admin console's refresh indicator: a thread of light crossing the top
      of a panel while its data is being refetched, so a background refresh is
-     visible without the content being taken away in order to say so. Named
-     apart from the marquee's `slide`, which travels a different distance for
-     a different reason. */
-  @keyframes sweep {
+     visible without the content being taken away in order to say so.
+
+     Named `thread` rather than `sweep`. It was `sweep`, which is also the name
+     of the accent travelling through the display headings, and a duplicate
+     @keyframes silently replaces the earlier one. The heading kept its
+     animation property and animated a transform instead of a background
+     position, and a transform does nothing at all to an inline span, so every
+     gradient heading on the site went still. */
+  @keyframes thread {
     from {
       transform: translate3d(-100%, 0, 0);
     }

@@ -90,7 +90,7 @@ export default async function HomePage() {
               hero out. The name reaches search through the title, the
               description, and the Person schema instead, which is where a
               crawler actually reads it. */}
-          <h1 className="mt-8 max-w-[17ch] text-[length:var(--text-display)] font-medium leading-[0.95] tracking-[-0.04em]">
+          <h1 className="mt-8 max-w-[20ch] text-[length:var(--text-display)] font-medium leading-[1.02] tracking-[-0.035em]">
             <span className="text-gradient">{profile.statement ?? profile.headline}</span>
           </h1>
 

@@ -124,7 +124,7 @@ export function RefreshBar({ active }: { active: boolean }) {
     <div aria-hidden="true" className="relative h-px w-full overflow-hidden bg-transparent">
       <span
         className={`absolute inset-y-0 left-0 w-1/3 bg-accent transition-opacity duration-300 ${
-          active ? "animate-[sweep_1.1s_linear_infinite] opacity-70" : "opacity-0"
+          active ? "animate-[thread_1.1s_linear_infinite] opacity-70" : "opacity-0"
         }`}
       />
     </div>
