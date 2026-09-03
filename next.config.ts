@@ -10,7 +10,49 @@ const backendOrigin = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8000";
  * Set here rather than in a proxy so they travel with the deployable and
  * cannot be lost by a change to infrastructure nobody remembers owning.
  */
+/**
+ * The content security policy.
+ *
+ * Static, and inline scripts are allowed. It was a per request nonce, which is
+ * the stronger form and the one Next documents, and it broke the deployed site
+ * completely: the nonce reached the response header but not the render, so the
+ * browser refused every inline script on the page. Those inline scripts carry
+ * the streamed React payload, so the payload never arrived, hydration stopped
+ * with "Connection closed", and nothing on the site responded to a tap. The
+ * pages looked perfect and were entirely dead.
+ *
+ * A nonce has to travel from a proxy, through the request, into the render.
+ * That worked on one host and not on another, and it had already cost this
+ * project a prerendered page that shipped unhydrated for the same reason. A
+ * policy whose correctness depends on a header surviving a platform's proxy
+ * implementation is not a policy this site should stake itself on.
+ *
+ * What is given up is protection against an injected inline script. This
+ * origin renders no user supplied HTML: visitor questions come back through
+ * React as text and are escaped. What is kept is what actually guards this
+ * site: no cross origin script may load, no eval in production, no plugins, no
+ * framing, and no base tag rewriting.
+ */
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"}`,
+  // Next emits inline style attributes, and a style cannot exfiltrate the way
+  // a script can.
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  // The API is same origin, through the proxy below.
+  "connect-src 'self'",
+  "manifest-src 'self'",
+  "worker-src 'self'",
+  "object-src 'none'",
+  "base-uri 'none'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },

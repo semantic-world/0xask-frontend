@@ -57,6 +57,14 @@ export default async function HomePage() {
 
   const current = experience.find((entry) => entry.is_current) ?? experience[0];
 
+  // The headline names several roles in one sentence. Set as a rail of
+  // separate titles it reads like a title card rather than a run on line, and
+  // it gives the hero a second line of type without a second paragraph.
+  const roles = (profile.headline ?? "")
+    .split(",")
+    .map((role) => role.trim())
+    .filter(Boolean);
+
   const earliest = experience.reduce<string | null>(
     (oldest, entry) => (!oldest || entry.started_on < oldest ? entry.started_on : oldest),
     null,
@@ -70,43 +78,75 @@ export default async function HomePage() {
       <StructuredData data={personSchema(profile)} />
       <StructuredData data={websiteSchema(profile)} />
 
-      <section className="flex min-h-[calc(100svh-var(--header-height)-5rem)] flex-col justify-center py-16 sm:py-20">
+      {/* The hero.
+
+          It used to lead with his statement set at display size, a sentence
+          long enough to fill a laptop screen on its own, and follow it with
+          the whole summary paragraph. Two blocks of prose before anything to
+          look at. A portfolio's first screen should introduce a person and
+          then get out of the way.
+
+          So the name is the headline, the roles are a rail beneath it, and the
+          statement is demoted to one quiet line. The summary is gone from here
+          entirely; it is the first thing on the about page, which is where
+          somebody who wants it is going. */}
+      <section className="relative flex min-h-[calc(100svh-var(--header-height)-4rem)] flex-col justify-center py-14 sm:py-20">
+        <span
+          aria-hidden="true"
+          // Sized down on the narrowest screens so the light behind the name
+          // cannot reach past the right edge and scroll the page.
+          className="pointer-events-none absolute -top-24 left-[-14%] -z-10 size-[15rem] rounded-full bg-accent opacity-[0.12] blur-[110px] sm:-top-40 sm:size-[36rem]"
+        />
+
         <Reveal>
+          {/* A status light, not a sentence. His availability names three
+              disciplines and ran to three lines inside a pill, which put a
+              paragraph above the name before the page had said who he is. The
+              sentence itself still closes the page, where there is room to
+              read it. */}
           <p className="inline-flex items-center gap-2.5 rounded-full border border-border-subtle bg-surface/60 px-3.5 py-1.5 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-ink-muted backdrop-blur-sm">
-            <span aria-hidden="true" className="pulse-dot size-1.5 rounded-full bg-positive" />
-            {profile.availability ?? "Open to engineering work"}
+            <span
+              aria-hidden="true"
+              className="pulse-dot size-1.5 shrink-0 rounded-full bg-positive"
+            />
+            Open to work
           </p>
         </Reveal>
 
         <Reveal delay={80}>
-          {/* His own line, from the profile, rather than one written into the
-              site. The most prominent sentence on a portfolio should be the
-              owner's, and it carries the accent sweep.
-
-              The name stays a caption underneath. It was moved into the
-              heading to help a search for the person, and the heading is
-              capped at 17ch for the display type, which is the wrong measure
-              for a line of tracked out monospace: it wrapped and threw the
-              hero out. The name reaches search through the title, the
-              description, and the Person schema instead, which is where a
-              crawler actually reads it. */}
-          <h1 className="mt-8 max-w-[20ch] text-[length:var(--text-display)] font-medium leading-[1.02] tracking-[-0.035em]">
-            <span className="text-gradient">{profile.statement ?? profile.headline}</span>
+          <h1 className="mt-7 max-w-[13ch] text-[length:var(--text-display)] font-medium leading-[0.94] tracking-[-0.045em] sm:mt-9">
+            <span className="text-gradient">{profile.full_name}</span>
           </h1>
+        </Reveal>
 
-          <p className="mt-6 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-faint">
-            {profile.full_name}
+        {roles.length ? (
+          <Reveal delay={150}>
+            {/* The first title carries the identity and the rest qualify it.
+                Set at equal weight they were four tracked out lines under the
+                name, which is a table of contents rather than a title card. */}
+            <p className="mt-6 font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] text-accent">
+              {roles[0]}
+            </p>
+            {roles.length > 1 ? (
+              // Joined as text rather than as separate nodes with separators
+              // between them. Each role is long enough to take its own line on
+              // a narrow screen, and a separator that leads a wrapped line
+              // stops reading as a divider and starts reading as a bullet.
+              <p className="mt-2 max-w-[52ch] font-mono text-[var(--text-caption)] text-ink-faint">
+                {roles.slice(1).join("  /  ")}
+              </p>
+            ) : null}
+          </Reveal>
+        ) : null}
+
+        <Reveal delay={220}>
+          <p className="mt-8 max-w-[44ch] text-[length:var(--text-lead)] leading-relaxed text-ink-muted">
+            {profile.statement ?? profile.summary}
           </p>
         </Reveal>
 
-        <Reveal delay={160}>
-          <p className="mt-8 max-w-[54ch] text-[length:var(--text-lead)] leading-relaxed text-ink-muted">
-            {profile.summary}
-          </p>
-        </Reveal>
-
-        <Reveal delay={240}>
-          <div className="mt-11 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Reveal delay={290}>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               href="/projects"
               className="group inline-flex h-13 items-center justify-center gap-2.5 rounded-full bg-ink px-7 py-3.5 text-[var(--text-small)] font-medium text-ink-inverse shadow-[var(--shadow-lift-2)] transition-all duration-300 ease-[var(--ease-out)] hover:shadow-[var(--shadow-lift-3)] active:scale-[0.98]"
@@ -134,21 +174,25 @@ export default async function HomePage() {
           </div>
         </Reveal>
 
-        {technologies.length ? (
-          <Reveal delay={340} className="mt-16">
-            <Marquee items={technologies} label="Technologies used across the published work" />
-          </Reveal>
-        ) : null}
+        {/* Figures rather than adjectives, and inside the hero rather than in
+            a band of their own below it. They are the fastest honest answer to
+            "is there anything here", and they were sitting one scroll too far
+            down to do that job. */}
+        <Reveal delay={360}>
+          <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border-subtle pt-8 sm:mt-14 sm:grid-cols-4">
+            <Figure value={projects.length} label="Projects" />
+            <Figure value={skillCount} label="Capabilities" />
+            {years ? <Figure value={years} suffix="+" label="Years building" /> : null}
+            <Figure value={status.answerable_claims} label="Approved claims" />
+          </dl>
+        </Reveal>
       </section>
 
-      <Reveal as="section" className="border-t border-border-subtle py-16 sm:py-20">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat value={projects.length} label="Published projects" />
-          <Stat value={skillCount} label="Capabilities, each with evidence" />
-          {years ? <Stat value={years} suffix="+" label="Years building systems" /> : null}
-          <Stat value={status.answerable_claims} label="Approved claims 0xAsk answers from" />
-        </div>
-      </Reveal>
+      {technologies.length ? (
+        <Reveal as="section" className="border-t border-border-subtle py-8">
+          <Marquee items={technologies} label="Technologies used across the published work" />
+        </Reveal>
+      ) : null}
 
       <section className="border-t border-border-subtle py-16 sm:py-20">
         <Reveal>
@@ -194,112 +238,144 @@ export default async function HomePage() {
         )}
       </section>
 
+      {/* Capabilities, as a ledger rather than a wall of small boxes.
+
+          Six cards of two lines each read as decoration. The same six set as
+          ruled rows, each naming the work behind it, read as a record, which is
+          the whole argument this section is making. */}
       {evidenced.length ? (
         <section className="border-t border-border-subtle py-16 sm:py-20">
-          <Reveal>
-            <header className="mb-10">
-              <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
-                Capabilities
-              </p>
-              <h2 className="mt-3 max-w-[24ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
-                Every claim has work behind it
-              </h2>
-              <p className="mt-4 max-w-[54ch] text-ink-muted">
-                A skill on its own is an assertion. Each of these links to the projects that
-                demonstrate it, which is the difference between a list and an argument.
-              </p>
-            </header>
-          </Reveal>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-16">
+            <Reveal>
+              <div className="lg:sticky lg:top-28">
+                <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
+                  Capabilities
+                </p>
+                <h2 className="mt-3 max-w-[16ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
+                  <span className="text-gradient">Every claim has work behind it</span>
+                </h2>
+                <p className="mt-4 max-w-[40ch] text-ink-muted">
+                  A skill on its own is an assertion. Each of these names the projects that
+                  demonstrate it, which is the difference between a list and an argument.
+                </p>
+                <Link
+                  href="/skills"
+                  className="group mt-6 inline-flex items-center gap-2 text-[var(--text-small)] font-medium text-accent"
+                >
+                  All {skillCount} capabilities
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    &rarr;
+                  </span>
+                </Link>
+              </div>
+            </Reveal>
 
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {evidenced.map((skill, index) => (
-              <Reveal as="li" key={skill.slug} delay={index * 60}>
-                <Spotlight className="h-full rounded-[var(--radius-lg)] border border-border-subtle bg-surface/70 p-5 backdrop-blur-sm transition-[transform,box-shadow] duration-500 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift-2)]">
-                  <p className="text-[length:var(--text-h4)] font-medium">{skill.name}</p>
-                  <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[var(--text-caption)] text-ink-faint">
-                    <span className="text-accent">
-                      {skill.evidence.length} {skill.evidence.length === 1 ? "project" : "projects"}
+            <ul className="min-w-0 border-t border-border-subtle">
+              {evidenced.map((skill, index) => (
+                <Reveal
+                  as="li"
+                  key={skill.slug}
+                  delay={index * 60}
+                  className="group border-b border-border-subtle"
+                >
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1.5 py-5 transition-colors duration-300 group-hover:text-ink">
+                    <span
+                      aria-hidden="true"
+                      className="tabular font-mono text-[var(--text-caption)] text-ink-faint transition-colors duration-300 group-hover:text-accent"
+                    >
+                      {String(index + 1).padStart(2, "0")}
                     </span>
-                    {skill.evidence
-                      .map((entry) => entry.project_name)
-                      .filter(Boolean)
-                      .slice(0, 3)
-                      .map((name) => (
-                        <span key={name}>{name}</span>
-                      ))}
-                  </p>
-                </Spotlight>
-              </Reveal>
-            ))}
-          </ul>
-
-          <Reveal delay={220} className="mt-8">
-            <Link
-              href="/skills"
-              className="group inline-flex items-center gap-2 text-[var(--text-small)] font-medium text-accent"
-            >
-              All {skillCount} capabilities
-              <span
-                aria-hidden="true"
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              >
-                &rarr;
-              </span>
-            </Link>
-          </Reveal>
+                    <span className="min-w-0 flex-1 text-[length:var(--text-h4)] font-medium tracking-[-0.01em]">
+                      {skill.name}
+                    </span>
+                    <span className="tabular font-mono text-[var(--text-caption)] text-accent">
+                      {skill.evidence.length}
+                      <span className="text-ink-faint">
+                        {skill.evidence.length === 1 ? " project" : " projects"}
+                      </span>
+                    </span>
+                    <span className="w-full min-w-0 truncate text-[var(--text-caption)] text-ink-faint">
+                      {skill.evidence
+                        .map((entry) => entry.project_name)
+                        .filter(Boolean)
+                        .slice(0, 4)
+                        .join(", ")}
+                    </span>
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
         </section>
       ) : null}
 
       {current ? (
         <Reveal as="section" className="border-t border-border-subtle py-16 sm:py-20">
-          <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
-            <div>
-              <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
-                {current.is_current ? "Currently" : "Most recently"}
-              </p>
-              <h2 className="mt-3 max-w-[18ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
-                {current.role}
-              </h2>
-              {current.organization_name ? (
-                <p className="mt-3 text-[length:var(--text-lead)] text-accent">
-                  {current.organization_name}
+          <div className="relative overflow-hidden rounded-[var(--radius-xl)] border border-border-subtle bg-surface/60 p-7 backdrop-blur-sm sm:p-10 lg:p-12">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-20 -z-10 size-[15rem] rounded-full bg-accent opacity-[0.09] blur-[80px] sm:size-[22rem]"
+            />
+
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_1.5fr] lg:gap-14">
+              <div className="min-w-0">
+                <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
+                  {current.is_current ? "Currently" : "Most recently"}
                 </p>
-              ) : null}
-            </div>
+                <h2 className="mt-3 max-w-[16ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
+                  {current.role}
+                </h2>
+                {current.organization_name ? (
+                  <p className="mt-3 text-[length:var(--text-lead)] text-accent">
+                    {current.organization_name}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="flex flex-col justify-center gap-5">
-              {current.summary ? (
-                <p className="max-w-[58ch] text-[length:var(--text-lead)] text-ink-muted">
-                  {current.summary}
-                </p>
-              ) : null}
+              <div className="flex min-w-0 flex-col justify-center gap-5">
+                {/* Clamped, with the link underneath. This is a landing page
+                    and the role summary runs to a dozen lines; whole role
+                    histories stacked on the front page are how a site starts
+                    reading as a wall of talk. */}
+                {current.summary ? (
+                  <p className="line-clamp-4 max-w-[56ch] text-[length:var(--text-lead)] leading-relaxed text-ink-muted">
+                    {current.summary}
+                  </p>
+                ) : null}
 
-              {current.highlights.length ? (
-                <ul className="space-y-2.5">
-                  {current.highlights.slice(0, 3).map((highlight) => (
-                    <li key={highlight} className="flex gap-3 text-ink-muted">
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.6em] size-1 shrink-0 rounded-full bg-accent"
-                      />
-                      <span className="max-w-[58ch]">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+                {current.highlights.length ? (
+                  <ul className="space-y-2.5">
+                    {current.highlights.slice(0, 2).map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="flex gap-3 text-[var(--text-small)] text-ink-muted"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-[0.7em] size-1 shrink-0 rounded-full bg-accent"
+                        />
+                        <span className="line-clamp-3 max-w-[56ch]">{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
 
-              <Link
-                href="/experience"
-                className="group inline-flex w-fit items-center gap-2 text-[var(--text-small)] font-medium text-accent"
-              >
-                The full history
-                <span
-                  aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:translate-x-1"
+                <Link
+                  href="/experience"
+                  className="group inline-flex w-fit items-center gap-2 text-[var(--text-small)] font-medium text-accent"
                 >
-                  &rarr;
-                </span>
-              </Link>
+                  The full history
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    &rarr;
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </Reveal>
@@ -310,12 +386,12 @@ export default async function HomePage() {
           <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
             How this works
           </p>
-          <h2 className="mt-3 max-w-[26ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
-            Discovery is automatic. Approval is not.
+          <h2 className="mt-3 max-w-[22ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
+            <span className="text-gradient">Discovery is automatic. Approval is not.</span>
           </h2>
         </header>
 
-        <ol className="grid gap-4 sm:grid-cols-3">
+        <ol className="grid gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border-subtle bg-border-subtle sm:grid-cols-3">
           {[
             {
               step: "01",
@@ -337,27 +413,40 @@ export default async function HomePage() {
               as="li"
               key={stage.step}
               delay={index * 90}
-              className="relative overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface/60 p-6 backdrop-blur-sm"
+              className="relative min-w-0 overflow-hidden bg-surface p-7 transition-colors duration-500 hover:bg-surface-raised sm:p-8"
             >
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-[4.5rem] font-semibold leading-none text-ink opacity-[0.05]"
+                className="pointer-events-none absolute -right-3 -top-6 select-none font-mono text-[6rem] font-semibold leading-none text-ink opacity-[0.05]"
               >
                 {stage.step}
               </span>
               <p className="relative font-mono text-[var(--text-caption)] tracking-[0.16em] text-accent">
                 {stage.step}
               </p>
-              <h3 className="relative mt-2 text-[length:var(--text-h4)] font-medium">
+              <h3 className="relative mt-3 text-[length:var(--text-h4)] font-medium tracking-[-0.01em]">
                 {stage.title}
               </h3>
-              <p className="relative mt-3 text-[var(--text-small)] text-ink-muted">{stage.body}</p>
+              <p className="relative mt-3 text-[var(--text-small)] leading-relaxed text-ink-muted">
+                {stage.body}
+              </p>
             </Reveal>
           ))}
         </ol>
       </Reveal>
 
+      {/* The two ways in. This is the product's whole idea, so it is given the
+          space of a statement rather than the space of a footnote. */}
       <Reveal as="section" className="border-t border-border-subtle py-16 sm:py-20">
+        <header className="mb-10">
+          <p className="font-mono text-[var(--text-caption)] uppercase tracking-[0.18em] text-ink-faint">
+            Two ways in
+          </p>
+          <h2 className="mt-3 max-w-[20ch] text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">
+            <span className="text-gradient">Same knowledge, two ways to reach it</span>
+          </h2>
+        </header>
+
         <div className="grid gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border-subtle bg-border-subtle sm:grid-cols-2">
           <PathCard
             eyebrow="Classic"
@@ -422,14 +511,23 @@ export default async function HomePage() {
   );
 }
 
-function Stat({ value, label, suffix }: { value: number; label: string; suffix?: string }) {
+/**
+ * One figure from the published record.
+ *
+ * A definition list rather than paragraphs, because that is what these are:
+ * the term is the label and the number is its value. The number leads, since
+ * the eye lands on it first and the label only has to say what it counted.
+ */
+function Figure({ value, label, suffix }: { value: number; label: string; suffix?: string }) {
   return (
-    <div>
-      <p className="tabular text-[length:var(--text-h1)] font-medium leading-none tracking-[-0.04em] text-ink">
+    <div className="min-w-0">
+      <dd className="tabular text-[length:var(--text-h2)] font-medium leading-none tracking-[-0.045em] text-ink">
         {value}
         {suffix ? <span className="text-accent">{suffix}</span> : null}
-      </p>
-      <p className="mt-3 max-w-[24ch] text-[var(--text-small)] text-ink-muted">{label}</p>
+      </dd>
+      <dt className="mt-2.5 font-mono text-[var(--text-caption)] uppercase tracking-[0.14em] text-ink-faint">
+        {label}
+      </dt>
     </div>
   );
 }
@@ -451,7 +549,7 @@ function PathCard({
 }) {
   return (
     <Spotlight className="group bg-surface transition-colors duration-500 hover:bg-surface-raised">
-      <Link href={href} className="flex h-full flex-col gap-3.5 p-8 sm:p-10">
+      <Link href={href} className="flex h-full flex-col gap-4 p-8 sm:p-10 lg:p-12">
         <span
           className={`font-mono text-[var(--text-caption)] uppercase tracking-[0.16em] ${
             accent ? "text-accent" : "text-ink-faint"
@@ -459,7 +557,7 @@ function PathCard({
         >
           {eyebrow}
         </span>
-        <span className="text-[length:var(--text-h3)] font-medium tracking-[-0.02em]">{title}</span>
+        <span className="text-[length:var(--text-h2)] font-medium tracking-[-0.03em]">{title}</span>
         <span className="max-w-[40ch] text-ink-muted">{body}</span>
         <span className="mt-auto inline-flex items-center gap-2 pt-6 text-[var(--text-small)] font-medium text-accent">
           {cta}
